@@ -1,16 +1,35 @@
 import { connection } from "../database/connection.js";
-import { hashPassword } from "../middleware/password.middlewar.js";
+import { userSchema } from "../guards/schema.guards.js";
+import { hashPassword } from "../middleware/password.middleware.js";
+import { addUserToDB, getAllUsersFromDB, getUserByIdFromDB } from "../services/users.service.js";
 
 const getAllUsers = async (req, res) => {
-    const [result] = await connection.query("SELECT * FROM users;")
+    const result = await getAllUsersFromDB()
     res.status(200).json(result)
 }
 
-const addUser = async (req, res) => {
-    const {name,last_name,email, password,role,status} = req.body
-    const hashedPassword = await hashPassword(password);
-    const [result] = await connection.query("INSERT INTO users  VALUES (UUID(),?,?,?,?,?,?);", [ name,last_name,email, hashedPassword,role,Boolean(status)])
-    res.status(200).json(result)
+const getUserById = async (req, res) => {
+    const {user_id} = req.params
+    const result = await getUserByIdFromDB(user_id)
+    res.status(200).json(result[0])
 }
 
-export {getAllUsers,addUser}
+const addUserController = async (req, res,next) => {
+    try {
+        const {name,last_name,email, password,role} = req.body
+
+        const {error} = userSchema.validate({email,password})
+        
+        if(error){
+            return res.status(400).json(error.message)
+        }
+
+        await addUserToDB(name,last_name,email, password,role)
+
+        return res.status(200).json({message: 'User created'})
+    } catch (error) {
+        next(error)
+    }
+}
+
+export {getAllUsers,getUserById,addUserController}
