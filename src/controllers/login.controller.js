@@ -1,5 +1,5 @@
 import { connection } from "../database/connection.js";
-import { verifyPassword } from "../middleware/password.middlewar.js";
+import { verifyPassword } from "../middleware/password.middleware.js";
 const logInUser = async (req,res) =>{
    try {
     const {user_id} = req.params

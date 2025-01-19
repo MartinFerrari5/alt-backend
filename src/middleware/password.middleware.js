@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 async function hashPassword(plainPassword) {
-    const saltRounds = 10; // Number of salt rounds (higher is more secure but slower)
+    const saltRounds = await bcrypt.genSalt(10); // Number of salt rounds (higher is more secure but slower)
     const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
     return hashedPassword;
 }
