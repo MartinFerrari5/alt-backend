@@ -3,21 +3,23 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Desarrollo de Backend proyecto ALT",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "format": "npx prettier --write ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "bcrypt": "5.0.1",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
     "mysql2": "^3.12.0"
   },
