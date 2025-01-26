@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import jwt from "jsonwebtoken";
+import { getUserByIdFromDB } from "../services/users/users.service.js";
 
 async function authenticateToken(req, res, next) {
   const accessToken = req.headers.authorization;
@@ -11,7 +12,7 @@ async function authenticateToken(req, res, next) {
   try {
     const decodedAccessToken = jwt.verify(accessToken, process.env.JWT_SECRET);
 
-    req.user = { id: decodedAccessToken.userId };
+    req.user = { id: decodedAccessToken.userId, role: decodedAccessToken.role };
 
     next(); /** Ejecuta el controller que le sigue el middleware **/
   } catch (error) {
@@ -19,4 +20,17 @@ async function authenticateToken(req, res, next) {
   }
 }
 
-export { authenticateToken };
+function authorize(roles = []) {
+  return async (req, res, next) => {
+    const { role } = req.user;
+
+    if (!roles.includes(role)) {
+      return res.status(403).json({ message: "Acceso denegado" });
+    } else {
+      return res.status(200).json({ message: "Acceso concedido" });
+    }
+    next();
+  };
+}
+
+export { authenticateToken, authorize };

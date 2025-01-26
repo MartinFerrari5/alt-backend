@@ -5,7 +5,9 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import userRouter from "./routes/user.routes.js";
 import logInRouter from "./routes/login.routes.js";
+import logOutRouter from "./routes/logout.routes.js";
 import homeRouter from "./routes/home.routes.js";
+import adminRouter from "./routes/admin.routes.js";
 
 dotenv.config();
 
@@ -17,6 +19,8 @@ app.use(cors());
 app.use("/", homeRouter);
 app.use("/users", userRouter);
 app.use("/login", logInRouter);
+app.use("/logout", logOutRouter);
+app.use("/admin", adminRouter);
 
 const port = process.env.PORT || 3000;
 

@@ -25,7 +25,6 @@ const addUserController = async (req, res, next) => {
       last_name,
       email,
       password,
-      role,
     });
 
     if (error) {

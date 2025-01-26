@@ -8,10 +8,7 @@ async function hashPassword(plainPassword) {
 async function verifyPassword(plainPassword, hashedPassword) {
   const match = await bcrypt.compare(plainPassword, hashedPassword);
   if (!match) {
-    throw new Error(
-      "Email o contraseña incorrectos",
-      (options = { cause: 401 }),
-    );
+    throw new Error("Email o contraseña incorrectos");
   }
   return match; // Returns true if passwords match, false otherwise
 }

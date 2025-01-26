@@ -1,14 +1,20 @@
 import { connection } from "../database/connection.js";
 import { verifyPassword } from "./users/password.service.js";
 import { generateToken } from "../middleware/token.middleware.js";
+import dotenv from "dotenv";
 
-async function logInUserService(user_id, email, password) {
+dotenv.config();
+
+const table_users = process.env.TABLE_USERS;
+
+async function logInUserService(email, password) {
   try {
     // Query
-    const sql = `SELECT * FROM users WHERE id = ?`;
-    const [user] = await connection.execute(sql, [user_id]);
 
-    if (user[0].email !== email) {
+    const sql = `SELECT * FROM ${table_users} WHERE email = ?`;
+    const [user] = await connection.execute(sql, [email]);
+
+    if (user.length == 0 || user[0].email !== email) {
       throw new Error("Email o contraseña incorrectos");
     }
 
@@ -16,7 +22,7 @@ async function logInUserService(user_id, email, password) {
     await verifyPassword(password, user[0].password);
 
     // Generar token
-    return generateToken(user[0].id);
+    return generateToken(user[0].id, user[0].role);
   } catch (error) {
     throw error;
   }

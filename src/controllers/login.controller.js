@@ -12,7 +12,6 @@ import { logInUserService } from "../services/login.service.js";
 
 async function logInUser(req, res) {
   try {
-    const { user_id } = req.params;
     const { email, password } = req.body;
 
     const { error } = loginSchema.validate({ email, password });
@@ -21,9 +20,9 @@ async function logInUser(req, res) {
       return res.status(400).json(error.message);
     }
 
-    const token = await logInUserService(user_id, email, password);
+    const { token, refreshToken } = await logInUserService(email, password);
 
-    res.status(200).json({ message: "Login exitoso", token });
+    res.status(200).json({ message: "Login exitoso", token, refreshToken });
   } catch (error) {
     res.status(401).json(error.message);
   }
