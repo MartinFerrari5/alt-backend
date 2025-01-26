@@ -13,8 +13,8 @@ export const userSchema = Joi.object({
   }),
   password: Joi.string()
     .pattern(new RegExp("(?=.*[a-z])"), { name: "lowercase" }) // At least one lowercase letter
-    .pattern(new RegExp("(?=.*[A-Z])")) // At least one uppercase letter
-    .pattern(new RegExp('(?=.*[!@#$%^&*(),.?":{}|<>])')) // At least one symbol
+    .pattern(new RegExp("(?=.*[A-Z])"), { name: "uppercase" }) // At least one uppercase letter
+    .pattern(new RegExp('(?=.*[!@#$%^&*(),.?":{}|<>])'), { name: "symbol" }) // At least one symbol
     .min(8)
     .required()
     .messages({
@@ -23,10 +23,10 @@ export const userSchema = Joi.object({
       "string.pattern.name":
         "La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.",
     }),
-  role: Joi.string().required().messages({
-    "string.empty": "Rol es requerido.",
-    "string.base": "Rol debe ser un string.",
-  }),
+  // role: Joi.string().required().messages({
+  //   "string.empty": "Rol es requerido.",
+  //   "string.base": "Rol debe ser un string.",
+  // }),
 });
 
 export const loginSchema = Joi.object({

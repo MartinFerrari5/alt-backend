@@ -1,0 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
+export const config = {
+  new_token_table: process.env.REFRESH_TOKEN_TABLE,
+};
