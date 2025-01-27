@@ -54,12 +54,14 @@ export const users = [
     name: "Joan",
     email: "admin@example.com",
     password: bcrypt.hashSync("123456", 5),
+    role: "user",
     isAdmin: true,
   },
   {
     name: "John",
     email: "user@example.com",
     password: bcrypt.hashSync("123456", 5),
+    role: "user",
     isAdmin: false,
   },
 ];
