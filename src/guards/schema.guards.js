@@ -38,3 +38,33 @@ export const loginSchema = Joi.object({
     "string.empty": "Contraseña requerida.",
   }),
 });
+
+export const taskSchema = Joi.object({
+  company: Joi.string().required().messages({
+    "string.empty": "La compañia es requerida.",
+  }),
+  project: Joi.string().min(10).required().messages({
+    "string.empty": "El projecto es requerido.",
+  }),
+  task_type: Joi.string().required().messages({
+    "string.empty": "El tipo de tarea es requerida.",
+  }),
+  task_description:Joi.optional().messages({
+    "string.empty": "La descripcion es requerida.",
+  }),
+  entry_time: Joi.string().pattern(new RegExp(/^([01]\d|2[0-3]):([0-5]\d)$/), {name:"time"})
+        .required()
+        .messages({
+          "string.empty": "La hora de entrada es requerida.",
+          "string.pattern.name": "El formato de la hora debe ser HH:MM",
+        }),
+
+  
+  exit_time: Joi.required().messages({
+    "string.empty": "La hora de salida es requerida.",
+  }),
+  
+  lunch_hours: Joi.required().messages({
+    "string.empty": "La hora de salida es requerida.",
+  }),
+});
