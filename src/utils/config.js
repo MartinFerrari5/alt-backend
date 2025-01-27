@@ -3,5 +3,5 @@ dotenv.config();
 
 export const config = {
   new_token_table: process.env.REFRESH_TOKEN_TABLE,
-  tasks_table : process.env.TABLE_TASKS
+  tasks_table: process.env.TABLE_TASKS,
 };
