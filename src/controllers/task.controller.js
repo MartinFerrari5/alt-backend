@@ -2,6 +2,7 @@ import { connection } from "../database/connection.js";
 import { taskSchema } from "../guards/schema.guards.js";
 import {
   addTaskService,
+  deleteTaskService,
   getAllTasksService,
   updateTaskService,
 } from "../services/tasks/tasks.service.js";
@@ -9,13 +10,13 @@ import {
 async function getTasksController(req, res) {
   try {
     const [tasks] = await getAllTasksService();
-    res.status(200).json(tasks);
+    res.status(200).json({ tasks, id: req.user.id });
   } catch (error) {
     res.status(500).json(error.message);
   }
 }
 
-async function addTaskControler(req, res) {
+async function addTaskController(req, res) {
   try {
     const { error } = taskSchema.validate(req.body);
 
@@ -23,7 +24,7 @@ async function addTaskControler(req, res) {
       return res.status(400).json(error.message);
     }
 
-    await addTaskService(req.body);
+    await addTaskService(req.body, req.user.id);
     res.status(200).json({ message: "Tarea Creada" });
   } catch (error) {
     res.status(error.status || 500).json(error.message);
@@ -34,7 +35,7 @@ async function updateTaskController(req, res, next) {
   try {
     const { task_id } = req.params;
 
-    await updateTaskService(task_id, req.body);
+    await updateTaskService(task_id, req.body, req.user);
 
     res.status(200).json({ message: "Tarea actualizada" });
   } catch (error) {
@@ -42,4 +43,20 @@ async function updateTaskController(req, res, next) {
   }
 }
 
-export { getTasksController, addTaskControler, updateTaskController };
+async function deleteTaskController(req, res) {
+  try {
+    const { task_id } = req.params;
+
+    await deleteTaskService(task_id, req.user);
+    res.status(200).json({ message: "Tarea Eliminada" });
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
+  }
+}
+
+export {
+  getTasksController,
+  addTaskController,
+  updateTaskController,
+  deleteTaskController,
+};

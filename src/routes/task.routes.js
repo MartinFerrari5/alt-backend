@@ -2,24 +2,20 @@ import { Router } from "express";
 import { authenticateToken, authorize } from "../middleware/auth.middleware.js";
 import {
   getTasksController,
-  addTaskControler,
+  addTaskController,
   updateTaskController,
+  deleteTaskController,
 } from "../controllers/task.controller.js";
 
 const router = Router();
 
-router.get(
-  "/",
-  authenticateToken,
-  authorize(["admin", "employee"]),
-  getTasksController,
-);
+router.get("/", authenticateToken, authorize(["admin"]), getTasksController);
 
 router.post(
   "/",
   authenticateToken,
   authorize(["admin", "employee"]),
-  addTaskControler,
+  addTaskController,
 );
 
 router.put(
@@ -29,6 +25,11 @@ router.put(
   updateTaskController,
 );
 
-router.delete("/:task_id", authenticateToken, authorize(["admin", "employee"]));
+router.delete(
+  "/:task_id",
+  authenticateToken,
+  authorize(["admin", "employee"]),
+  deleteTaskController,
+);
 
 export default router;

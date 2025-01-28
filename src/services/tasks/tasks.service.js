@@ -8,16 +8,19 @@ async function getAllTasksService() {
   return connection.query(query);
 }
 
-async function addTaskService({
-  company,
-  project,
-  task_type,
-  task_description,
-  entry_time,
-  exit_time,
-  lunch_hours,
-  status,
-}) {
+async function addTaskService(
+  {
+    company,
+    project,
+    task_type,
+    task_description,
+    entry_time,
+    exit_time,
+    lunch_hours,
+    status,
+  },
+  user_id,
+) {
   try {
     const [entry_hour, entry_minutes] = entry_time.split(":");
     const [exit_hour, exit_minutes] = exit_time.split(":");
@@ -30,7 +33,7 @@ async function addTaskService({
       throw error;
     }
 
-    const query = `INSERT INTO ${tasks_table} (id,company,project,task_type,task_description,entry_time,exit_time,lunch_hours,status) VALUES (UUID(),?,?,?,?,?,?,?,?);`;
+    const query = `INSERT INTO ${tasks_table} (id,company,project,task_type,task_description,entry_time,exit_time,lunch_hours,status,user_id) VALUES (UUID(),?,?,?,?,?,?,?,?,?);`;
     return connection.query(query, [
       company,
       project,
@@ -40,23 +43,69 @@ async function addTaskService({
       exit_time,
       lunch_hours,
       status,
+      user_id,
     ]);
   } catch (error) {
     throw error;
   }
 }
 
-async function updateTaskService(task_id, data) {
-  const update_values = [];
-  const entries = Object.entries(data);
-  for (const [key, value] of entries) {
-    update_values.push(`${key} = "${value}"`);
+async function updateTaskService(task_id, task_data, user_data) {
+  try {
+    const update_values = [];
+    const entries = Object.entries(task_data);
+    const { id: user_id, role } = user_data;
+    for (const [key, value] of entries) {
+      update_values.push(`${key} = "${value}"`);
+    }
+
+    const update_string = update_values.join(", ");
+
+    if (role === "admin") {
+      const query = `UPDATE ${tasks_table} SET ${update_string} WHERE id = ?;`;
+      return connection.query(query, [task_id]);
+    }
+
+    const query = `UPDATE ${tasks_table} SET ${update_string} WHERE id = ? AND user_id = ?;`;
+    const [result] = await connection.query(query, [task_id, user_id]);
+
+    if (result.affectedRows <= 0) {
+      const error = new Error("La tarea no existe o no tienes acceso a ella");
+      error.status = 403;
+      throw error;
+    }
+    return result;
+  } catch (error) {
+    throw error;
   }
-
-  const update_string = update_values.join(", ");
-  const query = `UPDATE ${tasks_table} SET ${update_string} WHERE id = ?;`;
-
-  return connection.query(query, [task_id]);
 }
 
-export { getAllTasksService, addTaskService, updateTaskService };
+async function deleteTaskService(task_id, user_data) {
+  try {
+    const { id: user_id, role } = user_data;
+
+    if (role === "admin") {
+      const query = `DELETE FROM ${tasks_table} WHERE id = ?;`;
+      return connection.query(query, [task_id]);
+    }
+
+    const query = `DELETE FROM ${tasks_table} WHERE id = ? AND user_id = ?;`;
+    const [result] = await connection.query(query, [task_id, user_id]);
+
+    if (result.affectedRows <= 0) {
+      const error = new Error("La tarea no existe o no tienes acceso a ella");
+      error.status = 403;
+      throw error;
+    }
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export {
+  getAllTasksService,
+  addTaskService,
+  updateTaskService,
+  deleteTaskService,
+};
