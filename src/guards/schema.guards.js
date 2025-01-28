@@ -67,4 +67,7 @@ export const taskSchema = Joi.object({
   lunch_hours: Joi.required().messages({
     "string.empty": "La hora de salida es requerida.",
   }),
+  status: Joi.optional().messages({
+    "string.empty": "Status...",
+  }),
 });
