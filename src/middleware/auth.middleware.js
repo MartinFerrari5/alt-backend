@@ -26,8 +26,6 @@ function authorize(roles = []) {
 
     if (!roles.includes(role)) {
       return res.status(403).json({ message: "Acceso denegado" });
-    } else {
-      return res.status(200).json({ message: "Acceso concedido" });
     }
     next();
   };

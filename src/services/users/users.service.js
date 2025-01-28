@@ -6,6 +6,8 @@ dotenv.config();
 
 const table_users = process.env.TABLE_USERS;
 
+const employees = ["admin", "employee"];
+
 const getAllUsersFromDB = () => {
   const query = `SELECT * FROM ${table_users};`;
   return connection.query(query);
@@ -24,9 +26,14 @@ const addUserToDB = async (
   role = "employee",
 ) => {
   try {
+    if (!employees.includes(role)) {
+      const error = new Error("Rol no valido");
+      error.status = 400;
+      throw error;
+    }
     const hashedPassword = await hashPassword(password);
     const query = `INSERT INTO alt_users (id,name, last_name, email, password, role) VALUES (UUID(),?, ?, ?, ?, ?);`;
-    console.log(query);
+
     const [result] = await connection.query(query, [
       name,
       last_name,
@@ -35,7 +42,7 @@ const addUserToDB = async (
       role,
     ]);
   } catch (error) {
-    throw new Error("Error al registrar usuario");
+    throw error;
   }
 };
 
