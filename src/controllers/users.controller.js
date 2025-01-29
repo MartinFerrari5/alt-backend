@@ -1,16 +1,20 @@
 import { userSchema } from "../guards/schema.guards.js";
 import {
+  sendNewPasswordService,
+  changePasswordService,
+} from "../services/users/password.service.js";
+import {
   getAllUsersFromDB,
   getUserByIdFromDB,
   addUserToDB,
 } from "../services/users/users.service.js";
 
-const getAllUsers = async (req, res) => {
+const getAllUsersController = async (req, res) => {
   const result = await getAllUsersFromDB();
   res.status(200).json(result[0]);
 };
 
-const getUserById = async (req, res) => {
+const getUserByIdController = async (req, res) => {
   const { user_id } = req.params;
   const result = await getUserByIdFromDB(user_id);
   res.status(200).json(result[0]);
@@ -39,4 +43,40 @@ const addUserController = async (req, res, next) => {
   }
 };
 
-export { getAllUsers, getUserById, addUserController };
+async function sendNewPasswordController(req, res, next) {
+  try {
+    const { email } = req.body;
+
+    await sendNewPasswordService(email);
+    res
+      .status(200)
+      .json({ message: "Se ha enviado un correo con tu nueva contraseña" });
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
+  }
+}
+
+async function changePasswordController(req, res, next) {
+  try {
+    const { email, old_password, new_password } = req.body;
+
+    await changePasswordService(
+      email,
+      old_password,
+      new_password,
+      req.userData,
+    );
+
+    res.status(200).json({ message: "Contraseña cambiada" });
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+}
+
+export {
+  getAllUsersController,
+  getUserByIdController,
+  addUserController,
+  sendNewPasswordController,
+  changePasswordController,
+};
