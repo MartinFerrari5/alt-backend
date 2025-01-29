@@ -1,4 +1,11 @@
 import bcrypt from "bcrypt";
+import { transporter } from "../../utils/email_sender.js";
+import { config } from "../../utils/config.js";
+import { connection } from "../../database/connection.js";
+import crypto from "crypto";
+import { passwordSchema } from "../../guards/schema.guards.js";
+
+const { users_table } = config;
 async function hashPassword(plainPassword) {
   const saltRounds = await bcrypt.genSalt(10); // Number of salt rounds (higher is more secure but slower)
   const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
@@ -8,9 +15,85 @@ async function hashPassword(plainPassword) {
 async function verifyPassword(plainPassword, hashedPassword) {
   const match = await bcrypt.compare(plainPassword, hashedPassword);
   if (!match) {
-    throw new Error("Email o contraseña incorrectos");
+    const error = new Error("Email o contraseña incorrectos");
+    error.status = 401;
+    throw error;
   }
   return match; // Returns true if passwords match, false otherwise
 }
 
-export { hashPassword, verifyPassword };
+async function updatePasswordService(email, password) {
+  try {
+    const hashedPassword = await hashPassword(password);
+    const query = `UPDATE ${users_table} SET password = ? WHERE email = ?;`;
+    const [result] = await connection.query(query, [hashedPassword, email]);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function sendNewPasswordService(email) {
+  try {
+    // Genera contraseña random
+    const password = crypto
+      .randomBytes(10)
+      .toString("base64")
+      .slice(0, 10)
+      .replace(/\+/g, "0")
+      .replace(/\//g, "0");
+    console.log(password);
+    // Email details
+    const mailOptions = {
+      from: process.env.EMAIL, // Sender address
+      to: email, // Receiver email
+      subject: "Your New Password",
+      html: `
+      <h2>Hello,</h2>
+      <p>Your new password is: <strong>${password}</strong></p>
+      <p>Please make sure to change it after logging in.</p>
+    `,
+    };
+    await transporter.sendMail(mailOptions);
+
+    return updatePasswordService(email, password);
+
+    //  await transporter.sendMail(mailOptions);
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function changePasswordService(
+  email,
+  old_password,
+  new_password,
+  user_data,
+) {
+  try {
+    // Verifica que la contraseña a cambiar este asociada la usuario en cuestion
+    await verifyPassword(old_password, user_data.password);
+    const { error } = passwordSchema.validate({ new_password });
+
+    if (error) {
+      throw error;
+    }
+    const new_hashed_password = await hashPassword(new_password);
+
+    const query = `UPDATE ${users_table} SET password = ? WHERE email = ?;`;
+    const [result] = await connection.query(query, [
+      new_hashed_password,
+      email,
+    ]);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export {
+  hashPassword,
+  verifyPassword,
+  sendNewPasswordService,
+  changePasswordService,
+};

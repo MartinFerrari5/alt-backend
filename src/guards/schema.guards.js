@@ -67,7 +67,25 @@ export const taskSchema = Joi.object({
   lunch_hours: Joi.required().messages({
     "string.empty": "La hora de salida es requerida.",
   }),
-  status: Joi.optional().messages({
+  status: Joi.string().required().messages({
     "string.empty": "Status...",
   }),
+  task_date: Joi.required().messages({
+    "string.empty": "La fecha es requerida.",
+  }),
+});
+
+export const passwordSchema = Joi.object({
+  new_password: Joi.string()
+    .pattern(new RegExp("(?=.*[a-z])"), { name: "lowercase" }) // At least one lowercase letter
+    .pattern(new RegExp("(?=.*[A-Z])"), { name: "uppercase" }) // At least one uppercase letter
+    .pattern(new RegExp('(?=.*[!@#$%^&*(),.?":{}|<>])'), { name: "symbol" }) // At least one symbol
+    .min(8)
+    .required()
+    .messages({
+      "string.empty": "Contraseña requerida.",
+      "string.min": "La contraseña debe tener al menos 8 caracteres.",
+      "string.pattern.name":
+        "La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.",
+    }),
 });

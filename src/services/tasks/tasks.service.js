@@ -18,6 +18,7 @@ async function addTaskService(
     exit_time,
     lunch_hours,
     status,
+    task_date,
   },
   user_id,
 ) {
@@ -33,7 +34,7 @@ async function addTaskService(
       throw error;
     }
 
-    const query = `INSERT INTO ${tasks_table} (id,company,project,task_type,task_description,entry_time,exit_time,lunch_hours,status,user_id) VALUES (UUID(),?,?,?,?,?,?,?,?,?);`;
+    const query = `INSERT INTO ${tasks_table} (id,company,project,task_type,task_description,entry_time,exit_time,lunch_hours,status,user_id,task_date) VALUES (UUID(),?,?,?,?,?,?,?,?,?,?);`;
     return connection.query(query, [
       company,
       project,
@@ -44,6 +45,7 @@ async function addTaskService(
       lunch_hours,
       status,
       user_id,
+      task_date,
     ]);
   } catch (error) {
     throw error;
