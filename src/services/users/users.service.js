@@ -18,13 +18,7 @@ const getUserByIdFromDB = (user_id) => {
   return connection.query(query, [user_id]);
 };
 
-const addUserToDB = async (
-  name,
-  last_name,
-  email,
-  password,
-  role = "employee",
-) => {
+const addUserToDB = async (full_name, email, password, role = "employee") => {
   try {
     if (!employees.includes(role)) {
       const error = new Error("Rol no valido");
@@ -32,11 +26,10 @@ const addUserToDB = async (
       throw error;
     }
     const hashedPassword = await hashPassword(password);
-    const query = `INSERT INTO alt_users (id,name, last_name, email, password, role) VALUES (UUID(),?, ?, ?, ?, ?);`;
+    const query = `INSERT INTO alt_users (id,full_name, email, password, role) VALUES (UUID(),?, ?, ?, ?);`;
 
     const [result] = await connection.query(query, [
-      name,
-      last_name,
+      full_name,
       email,
       hashedPassword,
       role,

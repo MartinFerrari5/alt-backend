@@ -1,11 +1,8 @@
 import Joi from "joi";
 
 export const userSchema = Joi.object({
-  name: Joi.string().required().messages({
-    "string.empty": "Nombre es requerido.",
-  }),
-  last_name: Joi.string().required().messages({
-    "string.empty": "Apellido es requerido.",
+  full_name: Joi.string().required().messages({
+    "string.empty": "Nombre  completo es requerido.",
   }),
   email: Joi.string().email().required().messages({
     "string.empty": "Email requerido.",
@@ -43,7 +40,7 @@ export const taskSchema = Joi.object({
   company: Joi.string().required().messages({
     "string.empty": "La compañia es requerida.",
   }),
-  project: Joi.string().min(10).required().messages({
+  project: Joi.string().min(3).required().messages({
     "string.empty": "El projecto es requerido.",
   }),
   task_type: Joi.string().required().messages({

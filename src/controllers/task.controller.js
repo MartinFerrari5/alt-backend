@@ -4,6 +4,10 @@ import {
   addTaskService,
   deleteTaskService,
   getAllTasksService,
+  getTaskByDateService,
+  getTaskByIdService,
+  getTaskByUserIdService,
+  getTaskByUserNameService,
   updateTaskService,
 } from "../services/tasks/tasks.service.js";
 
@@ -13,6 +17,48 @@ async function getTasksController(req, res) {
     res.status(200).json({ tasks, id: req.user.id });
   } catch (error) {
     res.status(500).json(error.message);
+  }
+}
+
+async function getTaskByIdController(req, res, next) {
+  try {
+    const { task_id } = req.params;
+    const [task] = await getTaskByIdService(task_id, req.user);
+    res.status(200).json({ task });
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
+  }
+}
+
+async function getTaskByUserIdController(req, res, next) {
+  try {
+    const { user_id } = req.params;
+    const [tasks] = await getTaskByUserIdService(user_id, req.user);
+    res.status(200).json({ tasks });
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
+  }
+}
+
+async function getTaskByUserNameController(req, res, next) {
+  try {
+    const { full_name } = req.body;
+    const { role } = req.user;
+    const [tasks] = await getTaskByUserNameService(full_name, role);
+
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
+  }
+}
+
+async function getTaskByDateController(req, res, next) {
+  try {
+    const { date } = req.body;
+    const [tasks] = await getTaskByDateService(date, req.user);
+    res.status(200).json({ tasks });
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
   }
 }
 
@@ -56,6 +102,10 @@ async function deleteTaskController(req, res) {
 
 export {
   getTasksController,
+  getTaskByIdController,
+  getTaskByUserIdController,
+  getTaskByDateController,
+  getTaskByUserNameController,
   addTaskController,
   updateTaskController,
   deleteTaskController,
