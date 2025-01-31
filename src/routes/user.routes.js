@@ -23,10 +23,10 @@ router.get(
 );
 
 // Agregar un nuevo usuario
-router.post("/", authenticateToken, authorize(["admin"]), addUserController);
+router.post("/",  verifyEmailMiddleware(false),addUserController);
 
 // Envio de contraseña nueva
-router.post("/newpassword", verifyEmailMiddleware, sendNewPasswordController);
+router.post("/newpassword", verifyEmailMiddleware(true), sendNewPasswordController);
 
 // Cambio de contraseña
 router.post(

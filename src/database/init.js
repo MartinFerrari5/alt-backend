@@ -1,5 +1,5 @@
 import { connection } from "./connection.js";
-import { data, users } from "./data.js";
+import { users, tasks } from "./data.js"; // Importamos solo users y tasks
 
 // Función asíncrona para insertar los datos
 async function insertData() {
@@ -43,19 +43,17 @@ async function insertData() {
 
     // Insertar los usuarios
     for (let user of users) {
-      const [rows] = await conn.query(
-        "SELECT * FROM alt_users WHERE email = ?",
-        [user.email],
-      );
+      const [rows] = await conn.query("SELECT * FROM alt_users WHERE email = ?", [user.email]);
       if (rows.length === 0) {
         const userInsertQuery = `
-          INSERT INTO alt_users (name, email, password, isAdmin) VALUES (?, ?, ?, ?)
+          INSERT INTO alt_users (name, last_name, email, password, role) VALUES (?, ?, ?, ?, ?)
         `;
         await conn.query(userInsertQuery, [
           user.name,
+          user.last_name || '',
           user.email,
           user.password,
-          user.isAdmin,
+          user.role || 'employee',
         ]);
         console.log(`Usuario ${user.name} insertado exitosamente`);
       } else {
@@ -67,21 +65,22 @@ async function insertData() {
     const productInsertQuery = `
       INSERT INTO products (name, slug, category, image, price, countInStock, brand, rating, numReviews, description) VALUES ?
     `;
-    await conn.query(productInsertQuery, [
-      data.map((product) => [
-        product.name,
-        product.slug,
-        product.category,
-        product.image,
-        product.price,
-        product.countInStock,
-        product.brand,
-        product.rating,
-        product.numReviews,
-        product.description,
+
+    await conn.query(taskInsertQuery, [
+      tasks.map((task) => [
+        task.id,
+        task.company,
+        task.project,
+        task.task_type,
+        task.task_description,
+        task.entry_time,
+        task.exit_time,
+        task.lunch_hours,
+        task.status,
       ]),
     ]);
-    console.log("Productos insertados exitosamente");
+
+    console.log("Tareas insertadas exitosamente");
   } catch (error) {
     console.error("Error al insertar datos: ", error);
   } finally {
