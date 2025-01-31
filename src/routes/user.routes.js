@@ -32,7 +32,7 @@ router.post("/newpassword", verifyEmailMiddleware(true), sendNewPasswordControll
 router.post(
   "/changepassword",
   authenticateToken,
-  verifyEmailMiddleware,
+  verifyEmailMiddleware(true),
   changePasswordController,
 );
 
