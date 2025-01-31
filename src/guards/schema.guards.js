@@ -86,3 +86,10 @@ export const passwordSchema = Joi.object({
         "La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.",
     }),
 });
+
+export const emailSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.empty": "Email requerido.",
+    "string.email": "Email debe ser una direccion correcta.",
+  }),
+});

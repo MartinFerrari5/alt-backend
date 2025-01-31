@@ -1,25 +1,26 @@
 import { connection } from "../../database/connection.js";
+import { checkDuplicatedUserService } from "../email/email.service.js";
 import { hashPassword } from "./password.service.js";
-import dotenv from "dotenv";
+import {config} from "../../utils/config.js";
 
-dotenv.config();
+const {users_table,emails_table} = config
 
-const table_users = process.env.TABLE_USERS;
-
-const employees = ["admin", "employee"];
+const employees = ["admin", "user"];
 
 const getAllUsersFromDB = () => {
-  const query = `SELECT * FROM ${table_users};`;
+  const query = `SELECT * FROM ${users_table};`;
   return connection.query(query);
 };
 
 const getUserByIdFromDB = (user_id) => {
-  const query = `SELECT * FROM ${table_users} WHERE id = ?;`;
+  const query = `SELECT * FROM ${users_table} WHERE id = ?;`;
   return connection.query(query, [user_id]);
 };
 
-const addUserToDB = async (full_name, email, password, role = "employee") => {
+const addUserToDB = async (full_name, email, password, role = "user") => {
   try {
+    
+    await checkDuplicatedUserService(users_table,email)
     if (!employees.includes(role)) {
       const error = new Error("Rol no valido");
       error.status = 400;
