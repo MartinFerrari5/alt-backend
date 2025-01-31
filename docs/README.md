@@ -4,7 +4,7 @@
 
 ## Creacion de usuarios
 
-`http://localhost:3000/users`
+**POST** `http://localhost:3000/users`
 
 ### Body
 
@@ -24,7 +24,7 @@
 
 ## Reseteo de contraseña enviado por mail (Usuario se olvido la contraseña)
 
-`http://localhost:3000/users/newpassword`
+**POST** `http://localhost:3000/users/newpassword`
 
 ### Body
 
@@ -40,7 +40,7 @@
 
 ## Cambio de contraseño (El usuario quiere cambiar la contraseña a voluntad)
 
-`http://localhost:3000/users/changepassword`
+**POST** `http://localhost:3000/users/changepassword`
 
 ### Body
 
@@ -57,3 +57,28 @@
     2. Errores por falta de relleno de campos.
     3. Contraseña vieja no coincide
     4. Errores por no cumplir con parametros de contraseña (mayusculas, minusculas, etc)
+
+## Crear Tarea
+
+**POST** `http://localhost:3000/tasks`
+
+### Body
+
+```json
+{
+    
+    "company": "Fravega Empleado",
+    "project": "Reporte de Actividades",
+    "task_type": "desarrollo", 
+    "task_description": "", 
+    "entry_time": "10:00", 
+    "exit_time": "15:00",
+    "lunch_hours": "25",
+    "status":"0",
+    "task_date":"2024/01/08"
+}
+```
+
+* Errores: 
+    1. Errores por falta de relleno de campos.
+    2. Errores en las horas (hora de ingreso mayor a la de salida, formato (HH:MM),etc)
