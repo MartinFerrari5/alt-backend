@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
 import userRouter from "./routes/user.routes.js";
+import emailRouter from "./routes/email.routes.js";
 import logInRouter from "./routes/login.routes.js";
 import logOutRouter from "./routes/logout.routes.js";
 import homeRouter from "./routes/home.routes.js";
@@ -19,6 +20,7 @@ app.use(cors());
 
 app.use("/", homeRouter);
 app.use("/users", userRouter);
+app.use("/emails", emailRouter);
 app.use("/login", logInRouter);
 app.use("/logout", logOutRouter);
 app.use("/admin", adminRouter);

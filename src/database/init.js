@@ -11,38 +11,34 @@ async function insertData() {
       CREATE TABLE IF NOT EXISTS alt_users (
         id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
         name VARCHAR(255) NOT NULL,
-        last_name VARCHAR(255) NOT NULL,
+        last_name VARCHAR(255),
         email VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
-        role VARCHAR(100) NOT NULL DEFAULT 'employee'
+        role VARCHAR(50) DEFAULT 'user',
+        isAdmin BOOLEAN,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `;
-
-    const createEmailsTable = `
-      CREATE TABLE IF NOT EXISTS emails (
-        id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
-        email VARCHAR(255) NOT NULL UNIQUE
-      );
-    `;
-
-    const createTasksTable = `
-      CREATE TABLE IF NOT EXISTS alt_tasks (
-        id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
-        company VARCHAR(255) NOT NULL,
-        project VARCHAR(255) NOT NULL,
-        task_type VARCHAR(255) NOT NULL,
-        task_description VARCHAR(255),
-        entry_time TIME,
-        exit_time TIME,
-        lunch_hours FLOAT,
-        status BOOLEAN DEFAULT 0
+    const createProductsTable = `
+      CREATE TABLE IF NOT EXISTS products (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        slug VARCHAR(255) NOT NULL,
+        category VARCHAR(255),
+        image VARCHAR(255),
+        price DECIMAL(10, 2),
+        countInStock INT,
+        brand VARCHAR(255),
+        rating DECIMAL(3, 2),
+        numReviews INT,
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `;
 
     // Ejecutar la creación de las tablas
     await conn.query(createUsersTable);
-    await conn.query(createEmailsTable);
-    await conn.query(createTasksTable);
+    await conn.query(createProductsTable);
     console.log("Tablas creadas exitosamente");
 
     // Insertar los usuarios
@@ -65,9 +61,9 @@ async function insertData() {
       }
     }
 
-    // Insertar las tareas
-    const taskInsertQuery = `
-      INSERT INTO alt_tasks (id, company, project, task_type, task_description, entry_time, exit_time, lunch_hours, status) VALUES ?
+    // Insertar los productos
+    const productInsertQuery = `
+      INSERT INTO products (name, slug, category, image, price, countInStock, brand, rating, numReviews, description) VALUES ?
     `;
 
     await conn.query(taskInsertQuery, [

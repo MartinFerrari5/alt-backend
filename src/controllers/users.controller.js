@@ -22,11 +22,10 @@ const getUserByIdController = async (req, res) => {
 
 const addUserController = async (req, res, next) => {
   try {
-    const { name, last_name, email, password, role } = req.body;
+    const { full_name, email, password, role } = req.body;
 
     const { error } = userSchema.validate({
-      name,
-      last_name,
+      full_name,
       email,
       password,
     });
@@ -35,7 +34,7 @@ const addUserController = async (req, res, next) => {
       return res.status(400).json(error.message);
     }
 
-    await addUserToDB(name, last_name, email, password, role);
+    await addUserToDB(full_name, email, password, role);
 
     return res.status(200).json({ message: "User created" });
   } catch (error) {
