@@ -93,6 +93,7 @@ async function addTaskService(
   user_id,
 ) {
   try {
+    
     const [entry_hour, entry_minutes] = entry_time.split(":");
     const [exit_hour, exit_minutes] = exit_time.split(":");
 
