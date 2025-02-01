@@ -1,9 +1,9 @@
 import { connection } from "../../database/connection.js";
 import { checkDuplicatedUserService } from "../email/email.service.js";
 import { hashPassword } from "./password.service.js";
-import {config} from "../../utils/config.js";
+import { config } from "../../utils/config.js";
 
-const {users_table,emails_table} = config
+const { users_table, emails_table } = config;
 
 const employees = ["admin", "user"];
 
@@ -19,8 +19,7 @@ const getUserByIdFromDB = (user_id) => {
 
 const addUserToDB = async (full_name, email, password, role = "user") => {
   try {
-    
-    await checkDuplicatedUserService(users_table,email)
+    await checkDuplicatedUserService(users_table, email);
     if (!employees.includes(role)) {
       const error = new Error("Rol no valido");
       error.status = 400;

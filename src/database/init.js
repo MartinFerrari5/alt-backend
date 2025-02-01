@@ -43,17 +43,20 @@ async function insertData() {
 
     // Insertar los usuarios
     for (let user of users) {
-      const [rows] = await conn.query("SELECT * FROM alt_users WHERE email = ?", [user.email]);
+      const [rows] = await conn.query(
+        "SELECT * FROM alt_users WHERE email = ?",
+        [user.email],
+      );
       if (rows.length === 0) {
         const userInsertQuery = `
           INSERT INTO alt_users (name, last_name, email, password, role) VALUES (?, ?, ?, ?, ?)
         `;
         await conn.query(userInsertQuery, [
           user.name,
-          user.last_name || '',
+          user.last_name || "",
           user.email,
           user.password,
-          user.role || 'employee',
+          user.role || "employee",
         ]);
         console.log(`Usuario ${user.name} insertado exitosamente`);
       } else {

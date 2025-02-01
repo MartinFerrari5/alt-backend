@@ -4,7 +4,7 @@ import { config } from "../../utils/config.js";
 const { tasks_table, users_table } = config;
 
 async function getAllTasksService() {
-  const query = `SELECT * FROM ${tasks_table};`;
+  const query = `SELECT *, hour(timediff(exit_time, entry_time))-lunch_hours as worked_hours FROM ${tasks_table};`;
   return connection.query(query);
 }
 
@@ -39,43 +39,28 @@ async function getTaskByUserIdService(user_id, user_data) {
   }
 }
 
-async function getTaskByUserNameService(full_name, role) {
-  if (role === "admin") {
-    const query = `SELECT * FROM ${tasks_table}  WHERE user_id = (SELECT DISTINCT id FROM ${users_table} WHERE INSTR(full_name, ?));`;
+async function getFilteredTasksService(full_name, date) {
+  try {
+    const full_name_query = full_name
+      ? `user_id = (SELECT DISTINCT id FROM ${users_table} WHERE INSTR(full_name, ? ))`
+      : true;
 
-    return connection.query(query, [full_name]);
-  } else {
-    const error = new Error("La tarea no existe o no tienes acceso a ella");
-    error.status = 403;
+    const split_date = date?.split(" ") ?? "";
+
+    const date_query_structure =
+      split_date.length === 2
+        ? `task_Date BETWEEN ? AND ?`
+        : `MONTHNAME(task_date) = ?`;
+
+    const date_query = date ? date_query_structure : true;
+
+    const query = `SELECT * FROM ${tasks_table} WHERE ${full_name_query} AND ${date_query};`;
+    const params = [full_name ?? null, ...(split_date ?? null)].filter(Boolean);
+
+    return connection.execute(query, params);
+  } catch (error) {
     throw error;
   }
-}
-
-async function getTaskByDateService(date, user_data) {
-  const split_date = date.split(" ");
-  const date_query =
-    split_date.length === 2
-      ? `where task_Date BETWEEN ? AND ?`
-      : `where MONTHNAME(task_Date) = ?;`;
-
-  const { id: user_id, role } = user_data;
-  if (role === "admin") {
-    const query = `SELECT * FROM ${tasks_table} ${date_query};`;
-
-    return connection.query(query, split_date);
-  }
-
-  const query = `SELECT * FROM ${tasks_table} ${date_query} and user_id = ?;`;
-
-  const result = await connection.query(query, [...split_date, user_id]);
-
-  if (result.length === 0) {
-    const error = new Error("La tarea no existe o no tienes acceso a ella");
-    error.status = 403;
-    throw error;
-  }
-
-  return result;
 }
 
 async function addTaskService(
@@ -93,7 +78,6 @@ async function addTaskService(
   user_id,
 ) {
   try {
-    
     const [entry_hour, entry_minutes] = entry_time.split(":");
     const [exit_hour, exit_minutes] = exit_time.split(":");
 
@@ -180,8 +164,7 @@ export {
   getAllTasksService,
   getTaskByIdService,
   getTaskByUserIdService,
-  getTaskByDateService,
-  getTaskByUserNameService,
+  getFilteredTasksService,
   addTaskService,
   updateTaskService,
   deleteTaskService,

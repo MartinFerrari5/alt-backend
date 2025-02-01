@@ -4,10 +4,9 @@ import {
   addTaskService,
   deleteTaskService,
   getAllTasksService,
-  getTaskByDateService,
+  getFilteredTasksService,
   getTaskByIdService,
   getTaskByUserIdService,
-  getTaskByUserNameService,
   updateTaskService,
 } from "../services/tasks/tasks.service.js";
 
@@ -40,22 +39,11 @@ async function getTaskByUserIdController(req, res, next) {
   }
 }
 
-async function getTaskByUserNameController(req, res, next) {
+async function getFilteredTasksController(req, res, next) {
   try {
-    const { full_name } = req.body;
-    const { role } = req.user;
-    const [tasks] = await getTaskByUserNameService(full_name, role);
+    const { fullname: full_name, date } = req.query;
 
-    res.status(200).json(tasks);
-  } catch (error) {
-    res.status(error.status || 500).json(error.message);
-  }
-}
-
-async function getTaskByDateController(req, res, next) {
-  try {
-    const { date } = req.body;
-    const [tasks] = await getTaskByDateService(date, req.user);
+    const [tasks] = await getFilteredTasksService(full_name, date);
     res.status(200).json({ tasks });
   } catch (error) {
     res.status(error.status || 500).json(error.message);
@@ -104,8 +92,7 @@ export {
   getTasksController,
   getTaskByIdController,
   getTaskByUserIdController,
-  getTaskByDateController,
-  getTaskByUserNameController,
+  getFilteredTasksController,
   addTaskController,
   updateTaskController,
   deleteTaskController,
