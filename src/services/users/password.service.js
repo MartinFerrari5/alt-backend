@@ -42,7 +42,7 @@ async function sendNewPasswordService(email) {
       .slice(0, 10)
       .replace(/\+/g, "0")
       .replace(/\//g, "0");
-    console.log(password);
+    
     // Email details
     const mailOptions = {
       from: process.env.EMAIL, // Sender address
