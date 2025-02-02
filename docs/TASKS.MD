@@ -67,6 +67,6 @@ _Observaciones:_ Se pueden enviar la cantidad de parametros a actualizar que sea
 
 ```json
 {
-    "status":1
+  "status": 1
 }
 ```

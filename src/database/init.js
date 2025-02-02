@@ -3,7 +3,7 @@ import { users, tasks, emails } from "./data.js";
 
 // Función asíncrona para insertar los datos
 async function insertData() {
-  const conn = await connection.getConnection(); 
+  const conn = await connection.getConnection();
 
   try {
     // Crear las tablas si no existen
@@ -48,7 +48,10 @@ async function insertData() {
     // Insertar los usuarios y recuperar su ID
     let userMap = {};
     for (let user of users) {
-      const [rows] = await conn.query("SELECT id FROM alt_users WHERE email = ?", [user.email]);
+      const [rows] = await conn.query(
+        "SELECT id FROM alt_users WHERE email = ?",
+        [user.email],
+      );
 
       let userId;
       if (rows.length === 0) {
@@ -62,14 +65,17 @@ async function insertData() {
           user.role || "employee",
         ]);
 
-        const [newUserRows] = await conn.query("SELECT id FROM alt_users WHERE email = ?", [user.email]);
+        const [newUserRows] = await conn.query(
+          "SELECT id FROM alt_users WHERE email = ?",
+          [user.email],
+        );
         userId = newUserRows[0].id;
         console.log(`Usuario ${user.full_name} insertado exitosamente`);
       } else {
         userId = rows[0].id;
         console.log(`Usuario con el correo ${user.email} ya existe`);
       }
-      
+
       userMap[user.email] = userId;
 
       // Insertar correo asociado al usuario si no existe
@@ -80,7 +86,7 @@ async function insertData() {
         await conn.query(emailInsertQuery, [user.email]);
         console.log(`Email ${user.email} insertado exitosamente`);
       } catch (emailError) {
-        if (emailError.code === 'ER_DUP_ENTRY') {
+        if (emailError.code === "ER_DUP_ENTRY") {
           console.log(`El email ${user.email} ya existe en la base de datos`);
         } else {
           throw emailError;
@@ -89,17 +95,22 @@ async function insertData() {
     }
 
     // Asignar los IDs reales de usuario a las tareas
-    const validTasks = tasks.map((task) => {
-      const userId = userMap[emails.find(e => e.id === task.user_id)?.email];
-      if (!userId) {
-        console.warn(`Advertencia: No se encontró usuario para la tarea con email ${task.user_id}`);
-        return null;
-      }
-      return {
-        ...task,
-        user_id: userId,
-      };
-    }).filter(Boolean);
+    const validTasks = tasks
+      .map((task) => {
+        const userId =
+          userMap[emails.find((e) => e.id === task.user_id)?.email];
+        if (!userId) {
+          console.warn(
+            `Advertencia: No se encontró usuario para la tarea con email ${task.user_id}`,
+          );
+          return null;
+        }
+        return {
+          ...task,
+          user_id: userId,
+        };
+      })
+      .filter(Boolean);
 
     if (validTasks.length === 0) {
       console.warn("No hay tareas válidas para insertar");
