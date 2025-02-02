@@ -13,7 +13,10 @@ import {
 const router = Router();
 
 //  Obtener todas las tareas
-router.get("/", authenticateToken, authorize(["admin"]), getTasksController);
+router.get("/", 
+  // authenticateToken,
+  //  authorize(["admin"]),
+    getTasksController);
 
 // Obtener tareas por id
 router.get(

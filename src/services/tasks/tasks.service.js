@@ -54,7 +54,7 @@ async function getFilteredTasksService(full_name, date) {
 
     const date_query = date ? date_query_structure : true;
 
-    const query = `SELECT * FROM ${tasks_table} WHERE ${full_name_query} AND ${date_query};`;
+    const query = `SELECT *,hour(timediff(exit_time, entry_time))-lunch_hours as worked_hours FROM ${tasks_table} WHERE ${full_name_query} AND ${date_query};`;
     const params = [full_name ?? null, ...(split_date ?? null)].filter(Boolean);
 
     return connection.execute(query, params);
@@ -125,7 +125,7 @@ async function updateTaskService(task_id, task_data, user_data) {
 
     const query = `UPDATE ${tasks_table} SET ${update_string} WHERE id = ? AND user_id = ?;`;
     const [result] = await connection.query(query, [task_id, user_id]);
-
+    
     if (result.affectedRows <= 0) {
       const error = new Error("La tarea no existe o no tienes acceso a ella");
       error.status = 403;
