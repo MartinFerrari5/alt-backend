@@ -3,20 +3,34 @@ import { config } from "../../utils/config.js";
 
 const { tasks_table, users_table } = config;
 
-async function getAllTasksService() {
-  const query = `SELECT *, hour(timediff(exit_time, entry_time))-lunch_hours as worked_hours FROM ${tasks_table};`;
-  return connection.query(query);
-}
-
-async function getTaskByIdService(task_id, user_data) {
+async function getAllTasksService(user_data, optional_query = true) {
   const { id: user_id, role } = user_data;
   if (role === "admin") {
-    const query = `SELECT * FROM ${tasks_table}  WHERE id = ?;`;
+    const query =
+      `SELECT *, hour(timediff(exit_time, entry_time))-lunch_hours as worked_hours FROM ${tasks_table} WHERE ` +
+      optional_query;
+    console.log(query);
+    return connection.query(query);
+  }
+
+  const query =
+    `SELECT *, hour(timediff(exit_time, entry_time))-lunch_hours as worked_hours FROM ${tasks_table} where user_id = ? AND ` +
+    optional_query;
+  return connection.execute(query, [user_id]);
+}
+
+async function getTaskByIdService(task_id, user_data, optional_query = true) {
+  const { id: user_id, role } = user_data;
+  if (role === "admin") {
+    const query =
+      `SELECT * FROM ${tasks_table}  WHERE id = ? AND ` + optional_query;
     return connection.query(query, [task_id]);
   }
 
-  const query = `SELECT * FROM ${tasks_table}  WHERE id = ? AND user_id = ?;`;
-  const result = await connection.query(query, [task_id, user_id]);
+  const query =
+    `SELECT * FROM ${tasks_table}  WHERE id = ? AND user_id = ? AND ` +
+    optional_query;
+  const [result] = await connection.query(query, [task_id, user_id]);
 
   if (result.length === 0) {
     const error = new Error("La tarea no existe o no tienes acceso a ella");
@@ -39,7 +53,7 @@ async function getTaskByUserIdService(user_id, user_data) {
   }
 }
 
-async function getFilteredTasksService(full_name, date) {
+async function getFilteredTasksService(full_name, date, optional_query = true) {
   try {
     const full_name_query = full_name
       ? `user_id = (SELECT DISTINCT id FROM ${users_table} WHERE INSTR(full_name, ? ))`
@@ -54,7 +68,9 @@ async function getFilteredTasksService(full_name, date) {
 
     const date_query = date ? date_query_structure : true;
 
-    const query = `SELECT * FROM ${tasks_table} WHERE ${full_name_query} AND ${date_query};`;
+    const query =
+      `SELECT *,hour(timediff(exit_time, entry_time))-lunch_hours as worked_hours FROM ${tasks_table} WHERE ${full_name_query} AND ${date_query} AND ` +
+      optional_query;
     const params = [full_name ?? null, ...(split_date ?? null)].filter(Boolean);
 
     return connection.execute(query, params);
