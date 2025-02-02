@@ -4,16 +4,17 @@ import {
   addTaskService,
   deleteTaskService,
   getAllTasksService,
-  getTaskByDateService,
+  getFilteredTasksService,
   getTaskByIdService,
   getTaskByUserIdService,
-  getTaskByUserNameService,
   updateTaskService,
 } from "../services/tasks/tasks.service.js";
+import { exportToExcel } from "../utils/export_excel.js";
 
 async function getTasksController(req, res) {
   try {
     const [tasks] = await getAllTasksService();
+    
     res.status(200).json({ tasks, id: req.user.id });
   } catch (error) {
     res.status(500).json(error.message);
@@ -40,22 +41,11 @@ async function getTaskByUserIdController(req, res, next) {
   }
 }
 
-async function getTaskByUserNameController(req, res, next) {
+async function getFilteredTasksController(req, res, next) {
   try {
-    const { full_name } = req.body;
-    const { role } = req.user;
-    const [tasks] = await getTaskByUserNameService(full_name, role);
+    const { fullname: full_name, date } = req.query;
 
-    res.status(200).json(tasks);
-  } catch (error) {
-    res.status(error.status || 500).json(error.message);
-  }
-}
-
-async function getTaskByDateController(req, res, next) {
-  try {
-    const { date } = req.body;
-    const [tasks] = await getTaskByDateService(date, req.user);
+    const [tasks] = await getFilteredTasksService(full_name, date);
     res.status(200).json({ tasks });
   } catch (error) {
     res.status(error.status || 500).json(error.message);
@@ -80,7 +70,7 @@ async function addTaskController(req, res) {
 async function updateTaskController(req, res, next) {
   try {
     const { task_id } = req.params;
-
+    
     await updateTaskService(task_id, req.body, req.user);
 
     res.status(200).json({ message: "Tarea actualizada" });
@@ -104,8 +94,7 @@ export {
   getTasksController,
   getTaskByIdController,
   getTaskByUserIdController,
-  getTaskByDateController,
-  getTaskByUserNameController,
+  getFilteredTasksController,
   addTaskController,
   updateTaskController,
   deleteTaskController,

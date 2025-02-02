@@ -7,18 +7,20 @@ import {
   deleteTaskController,
   getTaskByIdController,
   getTaskByUserIdController,
-  getTaskByDateController,
-  getTaskByUserNameController,
+  getFilteredTasksController,
 } from "../controllers/task.controller.js";
 
 const router = Router();
 
 //  Obtener todas las tareas
-router.get("/", authenticateToken, authorize(["admin"]), getTasksController);
+router.get("/", 
+  // authenticateToken,
+  //  authorize(["admin"]),
+    getTasksController);
 
 // Obtener tareas por id
 router.get(
-  "/:task_id",
+  "/task/:task_id",
   authenticateToken,
   authorize(["admin", "employee"]),
   getTaskByIdController,
@@ -32,14 +34,6 @@ router.get(
   getTaskByUserIdController,
 );
 
-// Obtener tareas por nombre y/o apellido del usuario
-router.post(
-  "/username",
-  authenticateToken,
-  authorize(["admin"]),
-  getTaskByUserNameController,
-);
-
 // Publicar una tarea
 router.post(
   "/",
@@ -48,12 +42,12 @@ router.post(
   addTaskController,
 );
 
-// Obtener tareas por fecha de creacion
-router.post(
-  "/date",
+// Obtener tareas filtradas: por fecha de creacion y/o nombre y apellido del usuario
+router.get(
+  "/filtertasks",
   authenticateToken,
-  authorize(["admin", "employee"]),
-  getTaskByDateController,
+  authorize(["admin"]),
+  getFilteredTasksController,
 );
 
 // Actualizar una tarea

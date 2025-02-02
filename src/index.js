@@ -10,6 +10,7 @@ import logOutRouter from "./routes/logout.routes.js";
 import homeRouter from "./routes/home.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import taskRouter from "./routes/task.routes.js";
+import statusRouter from "./routes/status.routes.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use("/login", logInRouter);
 app.use("/logout", logOutRouter);
 app.use("/admin", adminRouter);
 app.use("/tasks", taskRouter);
+app.use("/status", statusRouter);
 
 const port = process.env.PORT || 3000;
 
