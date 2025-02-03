@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS alt_companies(
 );
 
 
-CREATE TABLE IF NOT EXISTS alt_hour_Type(
+CREATE TABLE IF NOT EXISTS alt_hour_types(
 	`id` CHAR(36) PRIMARY KEY,
     `options` VARCHAR(255)
 );

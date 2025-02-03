@@ -70,3 +70,7 @@ _Observaciones:_ Se pueden enviar la cantidad de parametros a actualizar que sea
   "status": 1
 }
 ```
+
+## 4. Opciones de tareas
+
+**GET** `http://localhost:3000/options/:tabla`
