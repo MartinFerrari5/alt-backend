@@ -12,7 +12,7 @@ import {
 
 const router = Router();
 
-//  Obtener todas las tareas
+//  Obtener todas las tareas del usuario
 router.get(
   "/",
   authenticateToken,
@@ -24,7 +24,7 @@ router.get(
 router.get(
   "/task/:task_id",
   authenticateToken,
-  authorize(["admin", "employee"]),
+  authorize(["admin", "user"]),
   getTaskByIdController,
 );
 
@@ -56,7 +56,7 @@ router.get(
 router.put(
   "/:task_id",
   authenticateToken,
-  authorize(["admin", "employee"]),
+  authorize(["admin", "user"]),
   updateTaskController,
 );
 
@@ -64,7 +64,7 @@ router.put(
 router.delete(
   "/:task_id",
   authenticateToken,
-  authorize(["admin", "employee"]),
+  authorize(["admin", "user"]),
   deleteTaskController,
 );
 

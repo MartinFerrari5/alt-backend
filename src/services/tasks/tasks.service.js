@@ -12,11 +12,12 @@ async function getAllTasksService(user_data, optional_query = true) {
     console.log(query);
     return connection.query(query);
   }
-
+  
   const query =
     `SELECT *, hour(timediff(exit_time, entry_time))-lunch_hours as worked_hours FROM ${tasks_table} where user_id = ? AND ` +
     optional_query;
   return connection.execute(query, [user_id]);
+
 }
 
 async function getTaskByIdService(task_id, user_data, optional_query = true) {
