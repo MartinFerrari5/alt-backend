@@ -3,6 +3,8 @@ import { config } from "../../utils/config.js";
 
 const { types_table, companies_table, projects_table, hour_type_table } =
   config;
+
+  
 async function getOptionsService(table) {
   const table_db = config[table];
   const query = `SELECT options FROM ${table_db};`;
