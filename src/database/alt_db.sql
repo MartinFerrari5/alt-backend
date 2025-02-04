@@ -24,12 +24,14 @@ CREATE TABLE IF NOT EXISTS alt_tasks(
     task_description varchar(255),
     entry_time time,
     exit_time time,
+    hour_type varchar(100),
     lunch_hours float,
     status bool default 0,
     user_id CHAR(36),
     task_date date,
     FOREIGN KEY (user_id) REFERENCES alt_users(id)
 );
+
 
 -- task_types
 CREATE TABLE IF NOT EXISTS alt_task_types(

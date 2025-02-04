@@ -9,7 +9,6 @@ async function getAllTasksService(user_data, optional_query = true) {
     const query =
       `SELECT *, hour(timediff(exit_time, entry_time))-lunch_hours as worked_hours FROM ${tasks_table} WHERE ` +
       optional_query;
-    console.log(query);
     return connection.query(query);
   }
   

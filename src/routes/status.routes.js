@@ -24,7 +24,7 @@ router.get(
 router.put(
   "/:task_id",
   authenticateToken,
-  authorize(["admin", "employee"]),
+  authorize(["admin", "user"]),
   updateStatusController,
 );
 
