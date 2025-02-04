@@ -3,11 +3,11 @@ import {
   addUserController,
   getAllUsersController,
   getUserByIdController,
-  sendNewPasswordController,
-  changePasswordController,
+  
 } from "../controllers/users.controller.js";
 import { authenticateToken, authorize } from "../middleware/auth.middleware.js";
 import { verifyEmailMiddleware } from "../middleware/email.middleware.js";
+import { changePasswordService, sendNewPasswordService } from "../services/users/password.service.js";
 
 const router = Router();
 
@@ -29,7 +29,7 @@ router.post("/", verifyEmailMiddleware(false), addUserController);
 router.post(
   "/newpassword",
   verifyEmailMiddleware(true),
-  sendNewPasswordController,
+  sendNewPasswordService,
 );
 
 // Cambio de contraseña
@@ -37,7 +37,7 @@ router.post(
   "/changepassword",
   authenticateToken,
   verifyEmailMiddleware(true),
-  changePasswordController,
+  changePasswordService,
 );
 
 export default router;

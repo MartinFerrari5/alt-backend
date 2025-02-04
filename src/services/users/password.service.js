@@ -33,8 +33,10 @@ async function updatePasswordService(email, password) {
   }
 }
 
-async function sendNewPasswordService(email) {
+async function sendNewPasswordService(req,res) {
   try {
+    const { email } = req.body;
+    console.log(email)
     // Genera contraseña random
     const password = crypto
       .randomBytes(10)
@@ -58,7 +60,7 @@ async function sendNewPasswordService(email) {
 
     return updatePasswordService(email, password);
 
-    //  await transporter.sendMail(mailOptions);
+    
   } catch (error) {
     throw error;
   }
