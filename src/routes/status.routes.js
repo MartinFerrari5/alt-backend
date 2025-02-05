@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  downloadExportedTasksController,
   getExportedTasksByIdController,
   getExportedTasksController,
   updateStatusController,
@@ -15,11 +16,18 @@ router.get(
 );
 
 router.get(
-  "/:task_id",
+  "/task/:task_id",
   authenticateToken,
   authorize(["admin", "user"]),
   getExportedTasksByIdController,
 );
+
+router.get(
+  "/download",
+  // authenticateToken,
+  // authorize(["admin", "user"]),
+  downloadExportedTasksController,
+)
 
 router.put(
   "/:task_id",
