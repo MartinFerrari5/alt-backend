@@ -60,7 +60,9 @@ export const taskSchema = Joi.object({
   exit_time: Joi.required().messages({
     "string.empty": "La hora de salida es requerida.",
   }),
-
+  hour_type: Joi.string().required().messages({
+    "string.empty": "El tipo de hora es requerido.",
+  }),
   lunch_hours: Joi.required().messages({
     "string.empty": "La hora de salida es requerida.",
   }),
