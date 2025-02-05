@@ -1,4 +1,7 @@
-import { getOptionsService } from "../services/tasks/options.service.js";
+import {
+  addOptionsService,
+  getOptionsService,
+} from "../services/tasks/options.service.js";
 import { config } from "../utils/config.js";
 
 const {} = config;
@@ -12,4 +15,16 @@ async function getOptionsController(req, res) {
   }
 }
 
-export { getOptionsController };
+async function addOptionsController(req, res) {
+  try {
+    const { table, option } = req.body;
+
+    await addOptionsService(table, option, req.user);
+
+    res.status(200).json({ message: "Opcion Agregada" });
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
+  }
+}
+
+export { getOptionsController, addOptionsController };

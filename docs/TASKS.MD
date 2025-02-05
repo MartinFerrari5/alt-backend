@@ -71,6 +71,25 @@ _Observaciones:_ Se pueden enviar la cantidad de parametros a actualizar que sea
 }
 ```
 
-## 4. Opciones de tareas
+## 4. Obtener las opciopnes de las tablas
 
 **GET** `http://localhost:3000/options/:tabla`
+
+**Parms:**
+
+- Dentro del archivo [config.js](../src/utils/config.js), utilizar las _keys_ del objeto como parametro.
+
+## 5. Añadir opciones
+
+**POST** `http://localhost:3000/options/`
+
+**Body:**
+
+- Dentro del archivo [config.js](../src/utils/config.js), utilizar las _keys_ del objeto como valor
+
+```json
+{
+  "table": "projects_table",
+  "option": "Reporte de Actividades"
+}
+```

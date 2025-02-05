@@ -7,16 +7,16 @@ async function getAllTasksService(user_data, optional_query = true) {
   const { id: user_id, role } = user_data;
   if (role === "admin") {
     const query =
-      `SELECT *, hour(timediff(exit_time, entry_time))-lunch_hours as worked_hours FROM ${tasks_table} WHERE ` +
+      `SELECT *,sec_to_time(sum(time_to_Sec(worked_hours)) over()) as total FROM ${tasks_table} WHERE ` +
       optional_query;
+    console.log(query);
     return connection.query(query);
   }
-  
+
   const query =
-    `SELECT *, hour(timediff(exit_time, entry_time))-lunch_hours as worked_hours FROM ${tasks_table} where user_id = ? AND ` +
+    `SELECT *,sec_to_time(sum(time_to_Sec(worked_hours)) over()) as total FROM ${tasks_table} where user_id = ? AND ` +
     optional_query;
   return connection.execute(query, [user_id]);
-
 }
 
 async function getTaskByIdService(task_id, user_data, optional_query = true) {
@@ -69,7 +69,7 @@ async function getFilteredTasksService(full_name, date, optional_query = true) {
     const date_query = date ? date_query_structure : true;
 
     const query =
-      `SELECT *,hour(timediff(exit_time, entry_time))-lunch_hours as worked_hours FROM ${tasks_table} WHERE ${full_name_query} AND ${date_query} AND ` +
+      `SELECT *,sec_to_time(sum(time_to_Sec(worked_hours)) over())  as total FROM ${tasks_table} WHERE ${full_name_query} AND ${date_query} AND ` +
       optional_query;
     const params = [full_name ?? null, ...(split_date ?? null)].filter(Boolean);
 
@@ -87,6 +87,7 @@ async function addTaskService(
     task_description,
     entry_time,
     exit_time,
+    hour_type,
     lunch_hours,
     status,
     task_date,
@@ -105,7 +106,7 @@ async function addTaskService(
       throw error;
     }
 
-    const query = `INSERT INTO ${tasks_table} (id,company,project,task_type,task_description,entry_time,exit_time,lunch_hours,status,user_id,task_date) VALUES (UUID(),?,?,?,?,?,?,?,?,?,?);`;
+    const query = `INSERT INTO ${tasks_table} (id,company,project,task_type,task_description,entry_time,exit_time,hour_type,lunch_hours,status,user_id,task_date,worked_hours) VALUES (UUID(),?,?,?,?,?,?,?,?,?,?,?,timediff(?, ?));`;
     return connection.query(query, [
       company,
       project,
@@ -113,10 +114,13 @@ async function addTaskService(
       task_description,
       entry_time,
       exit_time,
+      hour_type,
       lunch_hours,
       status,
       user_id,
       task_date,
+      exit_time,
+      entry_time,
     ]);
   } catch (error) {
     throw error;

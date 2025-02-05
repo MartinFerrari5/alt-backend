@@ -15,7 +15,7 @@ function exportToExcel(res, data) {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   );
   res.setHeader("Content-Disposition", "attachment; filename=tareas.xlsx");
-  
+
   // res.send(buffer);
 }
 
