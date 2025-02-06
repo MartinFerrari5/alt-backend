@@ -16,34 +16,85 @@ async function insertData() {
         role VARCHAR(100) NOT NULL DEFAULT 'employee'
       );
     `;
+    
     const createEmailsTable = `
       CREATE TABLE IF NOT EXISTS emails (
         id CHAR(36) PRIMARY KEY,
         email VARCHAR(255) NOT NULL UNIQUE
       );
     `;
+    
     const createTasksTable = `
       CREATE TABLE IF NOT EXISTS alt_tasks (
           id CHAR(36) PRIMARY KEY,
           company VARCHAR(255) NOT NULL,
           project VARCHAR(255) NOT NULL,
           task_type VARCHAR(255) NOT NULL,
-          task_description varchar(255),
-          entry_time time,
-          exit_time time,
-          lunch_hours float,
-          status bool default 0,
+          task_description VARCHAR(255),
+          entry_time TIME,
+          exit_time TIME,
+          hour_type VARCHAR(100),
+          lunch_hours FLOAT,
+          status BOOLEAN DEFAULT 0,
           user_id CHAR(36),
-          task_date date,
+          task_date DATE,
+          worked_hours TIME,
           FOREIGN KEY (user_id) REFERENCES alt_users(id)
       );
     `;
+    
+    const createTaskTypesTable = `
+      CREATE TABLE IF NOT EXISTS alt_task_types (
+        id CHAR(36) PRIMARY KEY,
+        options VARCHAR(255)
+      );
+    `;
 
+    const createProjectsTable = `
+      CREATE TABLE IF NOT EXISTS alt_projects (
+        id CHAR(36) PRIMARY KEY,
+        options VARCHAR(255)
+      );
+    `;
+    
+    const createCompaniesTable = `
+      CREATE TABLE IF NOT EXISTS alt_companies (
+        id CHAR(36) PRIMARY KEY,
+        options VARCHAR(255)
+      );
+    `;
+    
+    const createHourTypesTable = `
+      CREATE TABLE IF NOT EXISTS alt_hour_types (
+        id CHAR(36) PRIMARY KEY,
+        options VARCHAR(255)
+      );
+    `;
+    
     // Ejecutar la creación de las tablas
     await conn.query(createUsersTable);
     await conn.query(createEmailsTable);
     await conn.query(createTasksTable);
+    await conn.query(createTaskTypesTable);
+    await conn.query(createProjectsTable);
+    await conn.query(createCompaniesTable);
+    await conn.query(createHourTypesTable);
     console.log("Tablas creadas exitosamente");
+    
+    // Crear trigger para calcular worked_hours
+    const createTrigger = `
+      CREATE TRIGGER updated_task_worked_hours
+      BEFORE UPDATE ON alt_tasks
+      FOR EACH ROW
+      BEGIN
+        IF OLD.entry_time <> NEW.entry_time OR OLD.exit_time <> NEW.exit_time THEN
+          SET NEW.worked_hours = TIMEDIFF(NEW.exit_time, NEW.entry_time);
+        END IF;
+      END;
+    `;
+    
+    await conn.query(createTrigger);
+    console.log("Trigger creado exitosamente");
 
     // Insertar los usuarios y recuperar su ID
     let userMap = {};
