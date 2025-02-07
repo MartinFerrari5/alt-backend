@@ -1,3 +1,5 @@
+//src/routes/admin.routes.js
+
 import { Router } from "express";
 import { authenticateToken, authorize } from "../middleware/auth.middleware.js";
 

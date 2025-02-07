@@ -1,3 +1,5 @@
+//src/services/email/email.service.js
+
 import { connection } from "../../database/connection.js";
 import { config } from "../../utils/config.js";
 
@@ -28,4 +30,9 @@ async function checkDuplicatedUserService(table, email) {
   }
 }
 
-export { addEmailService, checkDuplicatedUserService };
+async function deleteEmailService(email_id) {
+  const query = `DELETE FROM ${emails_table} WHERE id = ?;`;
+  return connection.execute(query, [email_id]);
+}
+
+export { addEmailService, checkDuplicatedUserService, deleteEmailService };

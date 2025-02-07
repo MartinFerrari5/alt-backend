@@ -71,7 +71,7 @@ _Observaciones:_ Se pueden enviar la cantidad de parametros a actualizar que sea
 }
 ```
 
-## 4. Obtener las opciopnes de las tablas
+## 4. Obtener las opciones de las tablas
 
 **GET** `http://localhost:3000/options/:tabla`
 

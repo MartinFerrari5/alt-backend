@@ -1,3 +1,5 @@
+// src/controllers/home.controller.js
+
 import { connection } from "../database/connection.js";
 import dotenv from "dotenv";
 

@@ -1,3 +1,5 @@
+// src/services/tasks/tasks.service.js
+
 import { connection } from "../../database/connection.js";
 import { config } from "../../utils/config.js";
 
@@ -7,14 +9,16 @@ async function getAllTasksService(user_data, optional_query = true) {
   const { id: user_id, role } = user_data;
   if (role === "admin") {
     const query =
-      `SELECT *,sec_to_time(sum(time_to_Sec(worked_hours)) over()) as total FROM ${tasks_table} WHERE ` +
+      `SELECT *, sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
+      sec_to_time(sum(time_to_Sec(worked_hours)) over()) as total FROM ${tasks_table} WHERE ` +
       optional_query;
-    console.log(query);
+
     return connection.query(query);
   }
 
   const query =
-    `SELECT *,sec_to_time(sum(time_to_Sec(worked_hours)) over()) as total FROM ${tasks_table} where user_id = ? AND ` +
+    `SELECT *,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
+    sec_to_time(sum(time_to_Sec(worked_hours)) over()) as total FROM ${tasks_table} where user_id = ? AND ` +
     optional_query;
   return connection.execute(query, [user_id]);
 }
@@ -69,7 +73,8 @@ async function getFilteredTasksService(full_name, date, optional_query = true) {
     const date_query = date ? date_query_structure : true;
 
     const query =
-      `SELECT *,sec_to_time(sum(time_to_Sec(worked_hours)) over())  as total FROM ${tasks_table} WHERE ${full_name_query} AND ${date_query} AND ` +
+      `SELECT *,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
+      sec_to_time(sum(time_to_Sec(worked_hours)) over())  as total FROM ${tasks_table} WHERE ${full_name_query} AND ${date_query} AND ` +
       optional_query;
     const params = [full_name ?? null, ...(split_date ?? null)].filter(Boolean);
 

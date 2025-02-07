@@ -1,3 +1,5 @@
+//src/middleware/email.middleware.js
+
 import { config } from "../utils/config.js";
 import { connection } from "../database/connection.js";
 
@@ -10,7 +12,9 @@ function verifyEmailMiddleware(requested) {
       const query = requested
         ? `SELECT * FROM ${users_table} WHERE email = ?;`
         : `SELECT * FROM ${emails_table} WHERE email = ?;`;
-      const [user] = await connection.query(query, [email]);
+
+      const [user] = await connection.query(query, [email ?? true]);
+
       if (!user[0] && requested) {
         return res.status(404).json({ message: "Email no encontrado" });
       } else if (!user[0] && !requested) {

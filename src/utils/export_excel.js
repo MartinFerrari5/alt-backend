@@ -16,7 +16,7 @@ function exportToExcel(res, data) {
   );
   res.setHeader("Content-Disposition", "attachment; filename=tareas.xlsx");
 
-  // res.send(buffer);
+  res.send(buffer);
 }
 
 export { exportToExcel };

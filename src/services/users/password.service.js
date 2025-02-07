@@ -1,3 +1,5 @@
+//src/services/users/password.service.js
+
 import bcrypt from "bcrypt";
 import { transporter } from "../../utils/email_sender.js";
 import { config } from "../../utils/config.js";

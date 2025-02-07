@@ -1,5 +1,5 @@
-import { connection } from "../database/connection.js";
-import { verifyPassword } from "../services/users/password.service.js";
+// src/controllers/login.controller.js
+
 import { loginSchema } from "../guards/schema.guards.js";
 import { logInUserService } from "../services/login.service.js";
 
