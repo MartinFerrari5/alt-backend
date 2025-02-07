@@ -1,10 +1,14 @@
+//src/routes/user.routes.js
+
 import { Router } from "express";
 import {
-  addUserController,
   getAllUsersController,
   getUserByIdController,
+  addUserController,
   sendNewPasswordController,
   changePasswordController,
+  updateUserController,
+  deleteUserController,
 } from "../controllers/users.controller.js";
 import { authenticateToken, authorize } from "../middleware/auth.middleware.js";
 import { verifyEmailMiddleware } from "../middleware/email.middleware.js";
@@ -38,6 +42,23 @@ router.post(
   authenticateToken,
   verifyEmailMiddleware(true),
   changePasswordController,
+);
+
+//Actualizar un usuario
+router.put(
+  "/:user_id",
+  authenticateToken,
+  verifyEmailMiddleware(false),
+  authorize(["admin"]),
+  updateUserController,
+);
+
+// Eliminar un usuario
+router.delete(
+  "/:user_id",
+  authenticateToken,
+  authorize(["admin"]),
+  deleteUserController,
 );
 
 export default router;

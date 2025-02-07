@@ -1,3 +1,5 @@
+// src/services/tasks/tasks.service.js
+
 import { connection } from "../../database/connection.js";
 import { config } from "../../utils/config.js";
 
@@ -10,7 +12,7 @@ async function getAllTasksService(user_data, optional_query = true) {
       `SELECT *, sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
       sec_to_time(sum(time_to_Sec(worked_hours)) over()) as total FROM ${tasks_table} WHERE ` +
       optional_query;
-    
+
     return connection.query(query);
   }
 

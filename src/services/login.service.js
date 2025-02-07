@@ -1,3 +1,5 @@
+// src/services/login.service.js
+
 import { connection } from "../database/connection.js";
 import { verifyPassword } from "./users/password.service.js";
 import { generateToken } from "../middleware/token.middleware.js";

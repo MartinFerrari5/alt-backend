@@ -1,3 +1,5 @@
+//src/controllers/users.controller.js
+
 import { userSchema } from "../guards/schema.guards.js";
 import {
   sendNewPasswordService,
@@ -7,6 +9,8 @@ import {
   getAllUsersFromDB,
   getUserByIdFromDB,
   addUserToDB,
+  deleteUserService,
+  updateUserService,
 } from "../services/users/users.service.js";
 
 const getAllUsersController = async (req, res) => {
@@ -72,10 +76,35 @@ async function changePasswordController(req, res, next) {
   }
 }
 
+async function updateUserController(req, res) {
+  try {
+    const { user_id } = req.params;
+
+    await updateUserService(user_id, req.body);
+
+    res.status(200).json({ message: "Usuario Actualizado" });
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
+  }
+}
+
+async function deleteUserController(req, res) {
+  try {
+    const { user_id } = req.params;
+
+    await deleteUserService(user_id);
+    res.status(200).json({ message: "Usuario Eliminado" });
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
+  }
+}
+
 export {
   getAllUsersController,
   getUserByIdController,
   addUserController,
   sendNewPasswordController,
   changePasswordController,
+  updateUserController,
+  deleteUserController,
 };

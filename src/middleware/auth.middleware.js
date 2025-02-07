@@ -1,7 +1,8 @@
+//src/middleware/auth.middleware.js
+
 import dotenv from "dotenv";
 dotenv.config();
 import jwt from "jsonwebtoken";
-import { getUserByIdFromDB } from "../services/users/users.service.js";
 
 async function authenticateToken(req, res, next) {
   const accessToken = req.headers.authorization;

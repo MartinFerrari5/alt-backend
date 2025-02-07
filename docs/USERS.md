@@ -22,7 +22,7 @@
   2. Errores por falta de relleno de campos
   3. Formato de los campos (contraseñas sin mayusculas, etc)
 
-## Reseteo de contraseña enviado por mail (Usuario se olvido la contraseña)
+## 2. Reseteo de contraseña enviado por mail (Usuario se olvido la contraseña)
 
 **POST** `http://localhost:3000/users/newpassword`
 
@@ -38,7 +38,7 @@
   1. Por mail **NO** registrado en la tabla de _alt_users_.
   2. Errores por falta de relleno de campos.
 
-## 2. Cambio de contraseño (El usuario quiere cambiar la contraseña a voluntad)
+## 3. Cambio de contraseña (El usuario quiere cambiar la contraseña a voluntad)
 
 **POST** `http://localhost:3000/users/changepassword`
 
@@ -58,37 +58,19 @@
   3. Contraseña vieja no coincide
   4. Errores por no cumplir con parametros de contraseña (mayusculas, minusculas, etc)
 
-## 3. Crear Tarea
+## 4. Actualizar datos del usuario (solo nombre completo y/o mail)
 
-**POST** `http://localhost:3000/tasks`
+**PUT** `http://localhost:3000/users/:user_id`
 
 ### Body
 
 ```json
 {
-  "company": "Fravega Empleado",
-  "project": "Reporte de Actividades",
-  "task_type": "desarrollo",
-  "task_description": "",
-  "entry_time": "10:00",
-  "exit_time": "15:00",
-  "lunch_hours": "25",
-  "status": "0",
-  "task_date": "2024/01/08"
+  "full_name": "Tincho",
+  "email": "tinchoferrarigd@gmail.com"
 }
 ```
 
 - Errores:
-  1. Errores por falta de relleno de campos.
-  2. Errores en las horas (hora de ingreso mayor a la de salida, formato (HH:MM),etc)
-
-## 4. Filtro Tareas
-
-**GET** `http://localhost:3000/tasks/filtertasks?fullname=admin&date=2022-03-12 2027-08-12`
-
-**_Observaciones:_**
-
-1. NO agregar comillas en el query: _Correcto:_ **fullname=admin**. _Erroneo:_ "admin"
-2. Chequear que el usuario exista correctamente en la bbdd.
-3. Si el usuario a visualizar es **John Doe**, crear tareas utilizando su token
-4. Los parametros pueden estar vacios.
+  1. Por mail **NO** registrado en la tabla de _emails_.
+  2. Mail ya existente en la tabla _alt_users_

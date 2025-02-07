@@ -1,5 +1,10 @@
+//src/controllers/email.controller.js
+
 import { emailSchema } from "../guards/schema.guards.js";
-import { addEmailService } from "../services/email/email.service.js";
+import {
+  addEmailService,
+  deleteEmailService,
+} from "../services/email/email.service.js";
 
 async function addEmailController(req, res, next) {
   try {
@@ -17,4 +22,15 @@ async function addEmailController(req, res, next) {
   }
 }
 
-export { addEmailController };
+async function deleteEmailController(req, res, next) {
+  try {
+    const { email_id } = req.params;
+    await deleteEmailService(email_id);
+
+    res.status(200).json({ message: "Email Eliminado" });
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
+  }
+}
+
+export { addEmailController, deleteEmailController };
