@@ -5,9 +5,12 @@ import { authenticateToken, authorize } from "../middleware/auth.middleware.js";
 import {
   addEmailController,
   deleteEmailController,
+  getAllEmailsController,
 } from "../controllers/email.controller.js";
 
 const router = Router();
+
+router.get("/", authenticateToken, authorize(["admin"]), getAllEmailsController);
 
 router.post("/", authenticateToken, authorize(["admin"]), addEmailController);
 

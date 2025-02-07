@@ -4,6 +4,7 @@ import { emailSchema } from "../guards/schema.guards.js";
 import {
   addEmailService,
   deleteEmailService,
+  getAllEmailsService,
 } from "../services/email/email.service.js";
 
 async function addEmailController(req, res, next) {
@@ -33,4 +34,13 @@ async function deleteEmailController(req, res, next) {
   }
 }
 
-export { addEmailController, deleteEmailController };
+async function getAllEmailsController(req, res, next) {
+  try {
+    const emails = await getAllEmailsService();
+    res.status(200).json(emails);
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
+  }
+}
+
+export { addEmailController, deleteEmailController, getAllEmailsController };

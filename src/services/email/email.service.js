@@ -35,4 +35,10 @@ async function deleteEmailService(email_id) {
   return connection.execute(query, [email_id]);
 }
 
-export { addEmailService, checkDuplicatedUserService, deleteEmailService };
+async function getAllEmailsService() {
+  const query = `SELECT * FROM ${emails_table};`;
+  const [emails] = await connection.query(query);
+  return emails;
+}
+
+export { addEmailService, checkDuplicatedUserService, deleteEmailService, getAllEmailsService };
