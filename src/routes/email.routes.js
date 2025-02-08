@@ -10,7 +10,12 @@ import {
 
 const router = Router();
 
-router.get("/", authenticateToken, authorize(["admin"]), getAllEmailsController);
+router.get(
+  "/",
+  authenticateToken,
+  authorize(["admin"]),
+  getAllEmailsController,
+);
 
 router.post("/", authenticateToken, authorize(["admin"]), addEmailController);
 
