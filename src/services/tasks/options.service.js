@@ -3,7 +3,6 @@
 import { connection } from "../../database/connection.js";
 import { config } from "../../utils/config.js";
 
-
 async function getOptionsService(table) {
   const table_db = config[table];
   const query = `SELECT options FROM ${table_db};`;
@@ -37,39 +36,38 @@ async function addOptionsService(table, option, { role }) {
   }
 }
 
-async function updateOptionsService (options_id,options_table, option){
-  if(!options_id || !options_table || !option){
+async function updateOptionsService(options_id, table, option) {
+  if (!options_id || !table || !option) {
     const error = new Error("Todos los campos son requridos");
     error.status = 400;
     throw error;
   }
   try {
-    const table = config[options_table];
-    const query = `UPDATE ${table} SET options = ? WHERE id = ?;`;
+    const real_table = config[table];
+    const query = `UPDATE ${real_table} SET options = ? WHERE id = ?;`;
     return connection.execute(query, [option, options_id]);
-
   } catch (error) {
     throw error;
   }
-  
-
 }
-async function deleteOptionsService (options_id,options_table){
-  if(!options_id || !options_table){
+async function deleteOptionsService(options_id, table) {
+  if (!options_id || !table) {
     const error = new Error("Todos los campos son requridos");
     error.status = 400;
     throw error;
   }
   try {
-    const table = config[options_table];
-    const query = `DELETE FROM ${table} WHERE id = ?;`;
+    const real_table = config[table];
+    const query = `DELETE FROM ${real_table} WHERE id = ?;`;
     return connection.execute(query, [options_id]);
-
   } catch (error) {
     throw error;
-  }  
-  
-
+  }
 }
 
-export { getOptionsService, addOptionsService,updateOptionsService, deleteOptionsService };
+export {
+  getOptionsService,
+  addOptionsService,
+  updateOptionsService,
+  deleteOptionsService,
+};

@@ -4,7 +4,7 @@ import {
   addOptionsService,
   getOptionsService,
   updateOptionsService,
-  deleteOptionsService
+  deleteOptionsService,
 } from "../services/tasks/options.service.js";
 import { config } from "../utils/config.js";
 
@@ -33,27 +33,30 @@ async function addOptionsController(req, res) {
 
 async function updateOptionsController(req, res) {
   try {
-    const {options_id} = req.params
-    const {options_table,option} = req.body
+    const { options_id } = req.params;
+    const { table, option } = req.body;
 
-    await updateOptionsService(options_id,options_table, option)
+    await updateOptionsService(options_id, table, option);
 
-    res.status(200).json({message: "Opcion Actualizada"})
+    res.status(200).json({ message: "Opcion Actualizada" });
   } catch (error) {
-    res.status(error.status || 500).json(error.message)
+    res.status(error.status || 500).json(error.message);
   }
 }
-async function deleteOptionsController (req, res) {
+async function deleteOptionsController(req, res) {
   try {
-    const {options_id} = req.params
-    const {options_table} = req.body
-    await deleteOptionsService(options_id,options_table)
+    const { options_id } = req.params;
+    const { table } = req.body;
+    await deleteOptionsService(options_id, table);
 
-    res.status(200).json({message: "Opcion Eliminada"})
+    res.status(200).json({ message: "Opcion Eliminada" });
   } catch (error) {
-    res.status(error.status || 500).json(error.message)
+    res.status(error.status || 500).json(error.message);
   }
-
 }
-export { getOptionsController, addOptionsController,updateOptionsController,
-  deleteOptionsController };
+export {
+  getOptionsController,
+  addOptionsController,
+  updateOptionsController,
+  deleteOptionsController,
+};

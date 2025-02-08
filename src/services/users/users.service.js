@@ -5,12 +5,14 @@ import { checkDuplicatedUserService } from "../email/email.service.js";
 import { hashPassword } from "./password.service.js";
 import { config } from "../../utils/config.js";
 import { emailSchema } from "../../guards/schema.guards.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const { users_table, emails_table } = config;
 
 const employees = ["admin", "user"];
 
-const getAllUsersFromDB = () => {
+const getAllUsersFromDB = async () => {
   const query = `SELECT * FROM ${users_table};`;
   return connection.query(query);
 };

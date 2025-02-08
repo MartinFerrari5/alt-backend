@@ -41,4 +41,9 @@ async function getAllEmailsService() {
   return emails;
 }
 
-export { addEmailService, checkDuplicatedUserService, deleteEmailService, getAllEmailsService };
+export {
+  addEmailService,
+  checkDuplicatedUserService,
+  deleteEmailService,
+  getAllEmailsService,
+};

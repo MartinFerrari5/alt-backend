@@ -1,6 +1,7 @@
 //src/routes/user.routes.js
 
 import { Router } from "express";
+
 import {
   getAllUsersController,
   getUserByIdController,
