@@ -54,14 +54,14 @@ _Observaciones:_ Se pueden enviar la cantidad de parametros a actualizar que sea
 
 **_Observaciones:_**
 
-1. NO agregar comillas en el query: _Correcto:_ **fullname=admin**. _Erroneo:_ "admin"
+1. NO agregar comillas en el query: _Correcto:_ **fullname=admin**. _Erroneo:_ "fullname=admin"
 2. Chequear que el usuario exista correctamente en la bbdd.
 3. Si el usuario a visualizar es **John Doe**, crear tareas utilizando su token
 4. Los parametros pueden estar vacios.
 
 ## 4. Finalizar/Exportar tarea (_status=1_)
 
-**PUT** `http://localhost:3000/status/c6fc6f3f-e0d4-11ef-ad66-047c1614f0fd`
+**PUT** `http://localhost:3000/status/:task_id`
 
 ### Body
 
