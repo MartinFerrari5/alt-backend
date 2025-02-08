@@ -3,6 +3,8 @@
 import {
   addOptionsService,
   getOptionsService,
+  updateOptionsService,
+  deleteOptionsService
 } from "../services/tasks/options.service.js";
 import { config } from "../utils/config.js";
 
@@ -29,4 +31,29 @@ async function addOptionsController(req, res) {
   }
 }
 
-export { getOptionsController, addOptionsController };
+async function updateOptionsController(req, res) {
+  try {
+    const {options_id} = req.params
+    const {options_table,option} = req.body
+
+    await updateOptionsService(options_id,options_table, option)
+
+    res.status(200).json({message: "Opcion Actualizada"})
+  } catch (error) {
+    res.status(error.status || 500).json(error.message)
+  }
+}
+async function deleteOptionsController (req, res) {
+  try {
+    const {options_id} = req.params
+    const {options_table} = req.body
+    await deleteOptionsService(options_id,options_table)
+
+    res.status(200).json({message: "Opcion Eliminada"})
+  } catch (error) {
+    res.status(error.status || 500).json(error.message)
+  }
+
+}
+export { getOptionsController, addOptionsController,updateOptionsController,
+  deleteOptionsController };
