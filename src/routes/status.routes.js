@@ -24,7 +24,11 @@ router.get(
   getExportedTasksByIdController,
 );
 
-router.get(
+router.post( 
+  /** 
+   * ?  YA ES UN POST
+   * */
+
   "/download",
   // authenticateToken,
   // authorize(["admin", "user"]),

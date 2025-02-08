@@ -68,8 +68,12 @@ export const taskSchema = Joi.object({
   lunch_hours: Joi.required().messages({
     "string.empty": "La hora de salida es requerida.",
   }),
-  status: Joi.string().required().messages({
-    "string.empty": "Status...",
+  status: Joi.string()
+  .valid("0", "1") // Only allows "0" or "1"
+  .required()
+  .messages({
+    "any.only": "Estado posibles: en progreso (0) o exportada (1).",
+    "string.empty": "El estado es requerido.",
   }),
   task_date: Joi.required().messages({
     "string.empty": "La fecha es requerida.",

@@ -7,19 +7,21 @@ const { tasks_table, users_table } = config;
 
 async function getAllTasksService(user_data, optional_query = true) {
   const { id: user_id, role } = user_data;
+  
   if (role === "admin") {
     const query =
-      `SELECT *, sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
-      sec_to_time(sum(time_to_Sec(worked_hours)) over()) as total FROM ${tasks_table} WHERE ` +
-      optional_query;
-
+    `SELECT t.*,u.full_name,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
+    sec_to_time(sum(time_to_Sec(worked_hours)) over()) as total FROM ${tasks_table} t  ` + `INNER JOIN ${users_table} u ON u.id = t.user_id ` +
+    ` where  ` + optional_query + " order by task_date "
+      
     return connection.query(query);
   }
 
   const query =
-    `SELECT *,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
-    sec_to_time(sum(time_to_Sec(worked_hours)) over()) as total FROM ${tasks_table} where user_id = ? AND ` +
-    optional_query;
+    `SELECT t.*,u.full_name,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
+      sec_to_time(sum(time_to_Sec(worked_hours)) over(order by task_date)) as total FROM ${tasks_table} t  ` + `INNER JOIN ${users_table} u ON u.id = t.user_id ` +
+      ` where user_id = ? and ` + optional_query + " order by task_date "
+      
   return connection.execute(query, [user_id]);
 }
 
@@ -73,11 +75,11 @@ async function getFilteredTasksService(full_name, date, optional_query = true) {
     const date_query = date ? date_query_structure : true;
 
     const query =
-      `SELECT *,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
-      sec_to_time(sum(time_to_Sec(worked_hours)) over())  as total FROM ${tasks_table} WHERE ${full_name_query} AND ${date_query} AND ` +
-      optional_query;
+      `SELECT t.*,u.full_name,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
+      sec_to_time(sum(time_to_Sec(worked_hours)) over())  as total FROM ${tasks_table} t ` +
+        ` INNER JOIN ${users_table} u ON u.id = t.user_id ` + ` WHERE ${full_name_query} AND ${date_query} AND ` + optional_query + " order by task_date ";
     const params = [full_name ?? null, ...(split_date ?? null)].filter(Boolean);
-
+    
     return connection.execute(query, params);
   } catch (error) {
     throw error;
@@ -110,6 +112,7 @@ async function addTaskService(
       error.status = 403;
       throw error;
     }
+
 
     const query = `INSERT INTO ${tasks_table} (id,company,project,task_type,task_description,entry_time,exit_time,hour_type,lunch_hours,status,user_id,task_date,worked_hours) VALUES (UUID(),?,?,?,?,?,?,?,?,?,?,?,timediff(?, ?));`;
     return connection.query(query, [
