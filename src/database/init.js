@@ -16,14 +16,14 @@ async function insertData() {
         role VARCHAR(100) NOT NULL DEFAULT 'employee'
       );
     `;
-    
+
     const createEmailsTable = `
       CREATE TABLE IF NOT EXISTS emails (
         id CHAR(36) PRIMARY KEY,
         email VARCHAR(255) NOT NULL UNIQUE
       );
     `;
-    
+
     const createTasksTable = `
       CREATE TABLE IF NOT EXISTS alt_tasks (
           id CHAR(36) PRIMARY KEY,
@@ -42,7 +42,7 @@ async function insertData() {
           FOREIGN KEY (user_id) REFERENCES alt_users(id)
       );
     `;
-    
+
     const createTaskTypesTable = `
       CREATE TABLE IF NOT EXISTS alt_task_types (
         id CHAR(36) PRIMARY KEY,
@@ -56,21 +56,21 @@ async function insertData() {
         options VARCHAR(255)
       );
     `;
-    
+
     const createCompaniesTable = `
       CREATE TABLE IF NOT EXISTS alt_companies (
         id CHAR(36) PRIMARY KEY,
         options VARCHAR(255)
       );
     `;
-    
+
     const createHourTypesTable = `
       CREATE TABLE IF NOT EXISTS alt_hour_types (
         id CHAR(36) PRIMARY KEY,
         options VARCHAR(255)
       );
     `;
-    
+
     // Ejecutar la creación de las tablas
     await conn.query(createUsersTable);
     await conn.query(createEmailsTable);
@@ -80,7 +80,7 @@ async function insertData() {
     await conn.query(createCompaniesTable);
     await conn.query(createHourTypesTable);
     console.log("Tablas creadas exitosamente");
-    
+
     // Crear trigger para calcular worked_hours
     const createTrigger = `
       CREATE TRIGGER updated_task_worked_hours
@@ -92,7 +92,7 @@ async function insertData() {
         END IF;
       END;
     `;
-    
+
     await conn.query(createTrigger);
     console.log("Trigger creado exitosamente");
 
