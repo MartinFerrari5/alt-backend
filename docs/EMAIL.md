@@ -4,7 +4,7 @@
 
 ## 1. Creacion de emails
 
-**POST** `http://localhost:3000/emails`
+**POST** `http://localhost:3000/reportes/emails`
 
 ### Body
 
@@ -21,7 +21,7 @@
 
 ## 2. Eliminar un mail
 
-**DELETE** `http://localhost:3000/emails/:email_id`
-
+**DELETE** `http://localhost:3000/reportes/emails?email_id = 12345`
+*ENVIAR LOS PARAMETROS COMO QUERY*
 - Errores:
   1. Token no valido (solo admins)

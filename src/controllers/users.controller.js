@@ -19,7 +19,7 @@ const getAllUsersController = async (req, res) => {
 };
 
 const getUserByIdController = async (req, res) => {
-  const { user_id } = req.params;
+  const { user_id } = req.query;
   const result = await getUserByIdFromDB(user_id);
   res.status(200).json(result[0]);
 };
@@ -78,7 +78,7 @@ async function changePasswordController(req, res, next) {
 
 async function updateUserController(req, res) {
   try {
-    const { user_id } = req.params;
+    const { user_id } = req.query;
 
     await updateUserService(user_id, req.body);
 
@@ -90,7 +90,7 @@ async function updateUserController(req, res) {
 
 async function deleteUserController(req, res) {
   try {
-    const { user_id } = req.params;
+    const { user_id } = req.query;
 
     await deleteUserService(user_id);
     res.status(200).json({ message: "Usuario Eliminado" });

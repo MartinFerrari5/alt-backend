@@ -49,11 +49,11 @@ async function sendNewPasswordService(email) {
     const mailOptions = {
       from: process.env.EMAIL, // Sender address
       to: email, // Receiver email
-      subject: "Your New Password",
+      subject: "ALT-Nueva contraseña ",
       html: `
-      <h2>Hello,</h2>
-      <p>Your new password is: <strong>${password}</strong></p>
-      <p>Please make sure to change it after logging in.</p>
+      <h2>Saludos,</h2>
+      <p>Su nueva contraseña es: <strong>${password}</strong></p>
+      <p>Por favor cambiarla por una que se acuerde.</p>
     `,
     };
     await transporter.sendMail(mailOptions);

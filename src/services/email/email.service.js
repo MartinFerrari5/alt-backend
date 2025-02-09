@@ -15,12 +15,19 @@ async function addEmailService(email) {
   }
 }
 
-async function checkDuplicatedUserService(table, email) {
+async function checkDuplicatedUserService(table, email, requested=false) {
   try {
     const query = `SELECT * FROM ${table} WHERE email = ?;`;
     const [user] = await connection.query(query, [email]);
 
-    if (user.length > 0) {
+    if(requested==true && user.length <= 0) {
+      const error = new Error("Email no registrado");
+      error.status = 400;
+      throw error;
+    }
+
+
+    if (user.length > 0 && !requested)  {
       const error = new Error("Email ya registrado");
       error.status = 400;
       throw error;
@@ -29,6 +36,7 @@ async function checkDuplicatedUserService(table, email) {
     throw error;
   }
 }
+
 
 async function deleteEmailService(email_id) {
   const query = `DELETE FROM ${emails_table} WHERE id = ?;`;

@@ -1,10 +1,10 @@
 //src/middleware/token.middleware.js
 
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import { addRefreshTokenToDB } from "../services/token.service.js";
+import { config } from "../utils/config.js";
 
-dotenv.config();
+const {token_pass} = config
 async function generateToken(user_id, role) {
   try {
     const token = jwt.sign({ userId: user_id, role }, process.env.JWT_SECRET, {
@@ -14,7 +14,7 @@ async function generateToken(user_id, role) {
 
     const refreshToken = jwt.sign(
       { userId: user_id },
-      process.env.JWT_REFRESH_TOKEN_SECRET,
+      token_pass,
       {
         subject: "accessUser",
         expiresIn: "1w",

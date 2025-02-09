@@ -45,7 +45,13 @@ async function updateOptionsService(options_id, table, option) {
   try {
     const real_table = config[table];
     const query = `UPDATE ${real_table} SET options = ? WHERE id = ?;`;
-    return connection.execute(query, [option, options_id]);
+    const [response] = await connection.execute(query, [option, options_id]);
+
+    if(response.affectedRows <= 0) {
+      const error = new Error("Opcion no encontrada");
+      error.status = 404;
+      throw error;
+    }
   } catch (error) {
     throw error;
   }
@@ -59,7 +65,14 @@ async function deleteOptionsService(options_id, table) {
   try {
     const real_table = config[table];
     const query = `DELETE FROM ${real_table} WHERE id = ?;`;
-    return connection.execute(query, [options_id]);
+    const [response] = await connection.execute(query, [options_id]);
+
+    if(response.affectedRows <= 0) {
+      const error = new Error("Opcion no encontrada");
+      error.status = 404;
+      throw error;
+    }
+    
   } catch (error) {
     throw error;
   }

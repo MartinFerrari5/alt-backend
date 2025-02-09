@@ -18,7 +18,7 @@ router.get(
 );
 
 router.get(
-  "/task/:task_id",
+  "/task",
   authenticateToken,
   authorize(["admin", "user"]),
   getExportedTasksByIdController,
@@ -36,7 +36,7 @@ router.post(
 );
 
 router.put(
-  "/:task_id",
+  "/",
   authenticateToken,
   authorize(["admin", "user"]),
   updateStatusController,

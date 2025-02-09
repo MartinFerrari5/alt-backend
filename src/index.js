@@ -21,14 +21,14 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use("/", homeRouter);
-app.use("/users", userRouter);
-app.use("/emails", emailRouter);
-app.use("/login", logInRouter);
-app.use("/logout", logOutRouter);
-app.use("/admin", adminRouter);
-app.use("/tasks", taskRouter);
-app.use("/status", statusRouter);
-app.use("/options", optionsRouter);
+app.use("/reportes/users", userRouter);
+app.use("/reportes/emails", emailRouter);
+app.use("/reportes/login", logInRouter);
+app.use("/reportes/logout", logOutRouter);
+app.use("/reportes/admin", adminRouter);
+app.use("/reportes/tasks", taskRouter);
+app.use("/reportes/status", statusRouter);
+app.use("/reportes/options", optionsRouter);
 
 const port = process.env.PORT || 3000;
 

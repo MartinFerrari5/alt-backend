@@ -10,4 +10,5 @@ export const config = {
   companies_table: process.env.TABLE_COMPANIES,
   projects_table: process.env.TABLE_PROJECTS,
   hour_type_table: process.env.TABLE_HOUR_TYPE,
+  token_pass: process.env.JWT_SECRET
 };

@@ -19,7 +19,7 @@ async function getExportedTasksController(req, res, next) {
 
 async function getExportedTasksByIdController(req, res, next) {
   try {
-    const { task_id } = req.params;
+    const { task_id } = req.query;
     const optional_query = "status=1";
     const [tasks] = await getTaskByIdService(task_id, req.user, optional_query);
     res.status(200).json({ tasks });
@@ -46,7 +46,7 @@ async function downloadExportedTasksController(req, res, next) {
 
 async function updateStatusController(req, res, next) {
   try {
-    const { task_id } = req.params;
+    const { task_id } = req.query;
 
     await updateTaskService(task_id, req.body, req.user);
 

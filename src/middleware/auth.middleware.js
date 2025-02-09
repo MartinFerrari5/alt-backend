@@ -1,8 +1,9 @@
 //src/middleware/auth.middleware.js
 
-import dotenv from "dotenv";
-dotenv.config();
 import jwt from "jsonwebtoken";
+import {config} from "../utils/config.js";
+
+const {token_pass} = config;
 
 async function authenticateToken(req, res, next) {
   const accessToken = req.headers.authorization;
@@ -11,7 +12,7 @@ async function authenticateToken(req, res, next) {
     return res.status(401).json({ message: "Acceso denegado" });
   }
   try {
-    const decodedAccessToken = jwt.verify(accessToken, process.env.JWT_SECRET);
+    const decodedAccessToken = jwt.verify(accessToken, token_pass);
 
     req.user = { id: decodedAccessToken.userId, role: decodedAccessToken.role };
 

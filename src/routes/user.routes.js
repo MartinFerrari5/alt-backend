@@ -21,7 +21,7 @@ router.get("/", authenticateToken, authorize(["admin"]), getAllUsersController);
 
 // Obtener un usuario por su ID
 router.get(
-  "/:user_id",
+  "/user",
   authenticateToken,
   authorize(["admin"]),
   getUserByIdController,
@@ -47,16 +47,16 @@ router.post(
 
 //Actualizar un usuario
 router.put(
-  "/:user_id",
+  "/",
   authenticateToken,
-  verifyEmailMiddleware(false),
+  // verifyEmailMiddleware(false),
   authorize(["admin"]),
   updateUserController,
 );
 
 // Eliminar un usuario
 router.delete(
-  "/:user_id",
+  "/",
   authenticateToken,
   authorize(["admin"]),
   deleteUserController,

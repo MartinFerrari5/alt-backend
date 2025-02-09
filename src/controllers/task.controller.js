@@ -25,7 +25,7 @@ async function getTasksController(req, res) {
 
 async function getTaskByIdController(req, res, next) {
   try {
-    const { task_id } = req.params;
+    const { task_id } = req.query;
     const [task] = await getTaskByIdService(task_id, req.user);
     res.status(200).json({ task });
   } catch (error) {
@@ -35,7 +35,7 @@ async function getTaskByIdController(req, res, next) {
 
 async function getTaskByUserIdController(req, res, next) {
   try {
-    const { user_id } = req.params;
+    const { user_id } = req.query;
     const [tasks] = await getTaskByUserIdService(user_id, req.user);
     res.status(200).json({ tasks });
   } catch (error) {
@@ -71,7 +71,7 @@ async function addTaskController(req, res) {
 
 async function updateTaskController(req, res, next) {
   try {
-    const { task_id } = req.params;
+    const { task_id } = req.query;
 
     await updateTaskService(task_id, req.body, req.user);
 
@@ -83,7 +83,7 @@ async function updateTaskController(req, res, next) {
 
 async function deleteTaskController(req, res) {
   try {
-    const { task_id } = req.params;
+    const { task_id } = req.query;
 
     await deleteTaskService(task_id, req.user);
     res.status(200).json({ message: "Tarea Eliminada" });

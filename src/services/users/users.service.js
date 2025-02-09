@@ -47,6 +47,13 @@ const addUserToDB = async (full_name, email, password, role = "user") => {
 async function updateUserService(user_id, updated_data) {
   const keys = Object.keys(updated_data);
   const string_query = [];
+
+  if(keys.includes("password") || keys.includes("role") ) {
+    const error = new Error("No puedes cambiar tu contraseña o rol de este modo");
+    error.status = 400;
+    throw error;
+  }
+
   // Validacion si el admin quiere cambiar email
   if (keys.includes("email")) {
     const { error } = emailSchema.validate({ email: updated_data.email });
@@ -55,7 +62,11 @@ async function updateUserService(user_id, updated_data) {
       throw error;
     }
 
+    // Email ya registrado y cuenta creada
     await checkDuplicatedUserService(users_table, updated_data.email);
+
+    // Verifica si el email fue creado por el administrador
+    await checkDuplicatedUserService(emails_table, updated_data.email, true);
   }
 
   for (const [keys, value] of Object.entries(updated_data)) {
