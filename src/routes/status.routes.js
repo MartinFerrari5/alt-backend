@@ -25,8 +25,8 @@ router.get(
   getExportedTasksByIdController,
 );
 
-router.post( 
-  /** 
+router.post(
+  /**
    * ?  YA ES UN POST
    * */
   "/download",
@@ -39,7 +39,7 @@ router.post(
 router.get(
   "/filtertasks",
   authenticateToken,
-  authorize(["admin","user"]),
+  authorize(["admin", "user"]),
   getFilteredExportedTasksController,
 );
 

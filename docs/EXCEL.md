@@ -4,7 +4,7 @@
 
 **POST** `http://localhost:3000/reportes/status/download`
 
-### Body 
+### Body
 
 ```json
 {

@@ -1,9 +1,9 @@
 //src/middleware/auth.middleware.js
 
 import jwt from "jsonwebtoken";
-import {config} from "../utils/config.js";
+import { config } from "../utils/config.js";
 
-const {token_pass} = config;
+const { token_pass } = config;
 
 async function authenticateToken(req, res, next) {
   const accessToken = req.headers.authorization;

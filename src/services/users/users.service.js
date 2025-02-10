@@ -48,8 +48,10 @@ async function updateUserService(user_id, updated_data) {
   const keys = Object.keys(updated_data);
   const string_query = [];
 
-  if(keys.includes("password") || keys.includes("role") ) {
-    const error = new Error("No puedes cambiar tu contraseña o rol de este modo");
+  if (keys.includes("password") || keys.includes("role")) {
+    const error = new Error(
+      "No puedes cambiar tu contraseña o rol de este modo",
+    );
     error.status = 400;
     throw error;
   }

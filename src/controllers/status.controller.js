@@ -33,8 +33,13 @@ async function getFilteredExportedTasksController(req, res) {
   try {
     const { fullname: full_name, date } = req.query;
 
-    const [tasks]= await getFilteredTasksService(full_name,date, req.user, "status=1");
-    
+    const [tasks] = await getFilteredTasksService(
+      full_name,
+      date,
+      req.user,
+      "status=1",
+    );
+
     res.status(200).json({ tasks });
   } catch (error) {
     res.status(error.message || 500).json(error.message);
@@ -43,13 +48,12 @@ async function getFilteredExportedTasksController(req, res) {
 
 async function downloadExportedTasksController(req, res, next) {
   try {
-
-    const {tasks} = req.body
+    const { tasks } = req.body;
 
     // const optional_query = "status=1";
     // req.user = { id: "e9755413-e0d3-11ef-ad66-047c1614f0fd", role: "admin" };
     // const [tasks] = await getAllTasksService(req.user, optional_query);
-    
+
     exportToExcel(res, tasks);
     // res.status(200).json({ tasks });
   } catch (error) {

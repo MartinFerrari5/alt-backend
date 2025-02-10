@@ -50,7 +50,7 @@ router.post(
 router.get(
   "/filtertasks",
   authenticateToken,
-  authorize(["admin","user"]),
+  authorize(["admin", "user"]),
   getFilteredTasksController,
 );
 
