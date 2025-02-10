@@ -14,7 +14,6 @@ import { exportToExcel } from "../utils/export_excel.js";
 
 async function getTasksController(req, res) {
   try {
-    
     const [tasks] = await getAllTasksService(req.user);
 
     res.status(200).json({ tasks, id: req.user.id });
@@ -47,7 +46,8 @@ async function getFilteredTasksController(req, res, next) {
   try {
     const { fullname: full_name, date } = req.query;
 
-    const [tasks] = await getFilteredTasksService(full_name, date);
+    const [tasks] = await getFilteredTasksService(full_name, date, req.user);
+
     res.status(200).json({ tasks });
   } catch (error) {
     res.status(error.status || 500).json(error.message);

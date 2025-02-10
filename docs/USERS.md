@@ -61,7 +61,7 @@
 ## 4. Actualizar datos del usuario (solo nombre completo y/o mail)
 
 **PUT** `http://localhost:3000/users/user?user_id=12345`
-*Enviar los parametros como query*
+_Enviar los parametros como query_
 
 ### Body
 

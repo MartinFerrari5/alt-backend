@@ -29,7 +29,8 @@
 ## 2. Actualizar tareas
 
 **PUT** `http://localhost:3000/reportes/tasks/task?task_id=12345`
-*Enviar los parametros como query*
+_Enviar los parametros como query_
+
 ### Body
 
 _Observaciones:_ Se pueden enviar la cantidad de parametros a actualizar que sean necesarios
@@ -51,7 +52,7 @@ _Observaciones:_ Se pueden enviar la cantidad de parametros a actualizar que sea
 ## 3. Filtro Tareas
 
 **GET** `http://localhost:3000/reportes/tasks/filtertasks?fullname=admin&date=2022-03-12 2027-08-12`
-*Enviar los parametros como query*
+_Enviar los parametros como query_
 
 **_Observaciones:_**
 
@@ -63,7 +64,7 @@ _Observaciones:_ Se pueden enviar la cantidad de parametros a actualizar que sea
 ## 4. Finalizar/Exportar tarea (_status=1_)
 
 **PUT** `http://localhost:3000/reportes/status?task_id=12345`
-*Enviar los parametros como query*
+_Enviar los parametros como query_
 
 ### Body
 
@@ -76,7 +77,7 @@ _Observaciones:_ Se pueden enviar la cantidad de parametros a actualizar que sea
 ## 4. Obtener las opciones de las tablas
 
 **GET** `http://localhost:3000/reportes/options?tabla=companies_table`
-*Enviar los parametros como query*
+_Enviar los parametros como query_
 
 **Parms:**
 
@@ -91,14 +92,13 @@ _Observaciones:_ Se pueden enviar la cantidad de parametros a actualizar que sea
 - Dentro del archivo [config.js](../src/utils/config.js), utilizar las _keys_ del objeto como valor.
 
 ej: **tasks_table, companies_table,etc**
+
 ```js
 const config = {
   tasks_table: process.env.TABLE_TASKS,
   companies_table: process.env.TABLE_COMPANIES,
-}
- 
+};
 ```
-
 
 ```json
 {

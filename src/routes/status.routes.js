@@ -5,6 +5,7 @@ import {
   downloadExportedTasksController,
   getExportedTasksByIdController,
   getExportedTasksController,
+  getFilteredExportedTasksController,
   updateStatusController,
 } from "../controllers/status.controller.js";
 import { authenticateToken, authorize } from "../middleware/auth.middleware.js";
@@ -24,15 +25,22 @@ router.get(
   getExportedTasksByIdController,
 );
 
-router.post( 
-  /** 
+router.post(
+  /**
    * ?  YA ES UN POST
    * */
-
   "/download",
   // authenticateToken,
   // authorize(["admin", "user"]),
   downloadExportedTasksController,
+);
+
+// Obtener tareas filtradas: por fecha de creacion y/o nombre y apellido del usuario
+router.get(
+  "/filtertasks",
+  authenticateToken,
+  authorize(["admin", "user"]),
+  getFilteredExportedTasksController,
 );
 
 router.put(

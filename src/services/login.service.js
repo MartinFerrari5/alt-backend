@@ -5,7 +5,7 @@ import { verifyPassword } from "./users/password.service.js";
 import { generateToken } from "../middleware/token.middleware.js";
 import { config } from "../utils/config.js";
 
-const {users_table} = config
+const { users_table } = config;
 
 async function logInUserService(email, password) {
   try {

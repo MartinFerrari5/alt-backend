@@ -22,6 +22,7 @@
 ## 2. Eliminar un mail
 
 **DELETE** `http://localhost:3000/reportes/emails?email_id = 12345`
-*ENVIAR LOS PARAMETROS COMO QUERY*
+_ENVIAR LOS PARAMETROS COMO QUERY_
+
 - Errores:
   1. Token no valido (solo admins)
