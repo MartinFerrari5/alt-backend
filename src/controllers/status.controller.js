@@ -2,6 +2,7 @@
 
 import {
   getAllTasksService,
+  getFilteredTasksService,
   getTaskByIdService,
   updateTaskService,
 } from "../services/tasks/tasks.service.js";
@@ -25,6 +26,18 @@ async function getExportedTasksByIdController(req, res, next) {
     res.status(200).json({ tasks });
   } catch (error) {
     res.status(error.status || 500).json(error.message);
+  }
+}
+
+async function getFilteredExportedTasksController(req, res) {
+  try {
+    const { fullname: full_name, date } = req.query;
+
+    const [tasks]= await getFilteredTasksService(full_name,date, req.user, "status=1");
+    
+    res.status(200).json({ tasks });
+  } catch (error) {
+    res.status(error.message || 500).json(error.message);
   }
 }
 
@@ -60,5 +73,6 @@ export {
   getExportedTasksController,
   getExportedTasksByIdController,
   downloadExportedTasksController,
+  getFilteredExportedTasksController,
   updateStatusController,
 };

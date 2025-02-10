@@ -59,8 +59,11 @@ async function getTaskByUserIdService(user_id, user_data) {
   }
 }
 
-async function getFilteredTasksService(full_name, date, optional_query = true) {
+async function getFilteredTasksService(full_name, date, user_data,optional_query = true) {
   try {
+
+    const {id:user_id,role} = user_data;
+
     const full_name_query = full_name
       ? `user_id = (SELECT DISTINCT id FROM ${users_table} WHERE INSTR(full_name, ? ))`
       : true;
@@ -74,11 +77,20 @@ async function getFilteredTasksService(full_name, date, optional_query = true) {
 
     const date_query = date ? date_query_structure : true;
 
+    if(role === "admin"){
+      const query =
+      `SELECT t.*,u.full_name,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
+      sec_to_time(sum(time_to_Sec(worked_hours)) over())  as total FROM ${tasks_table} t ` +
+        ` INNER JOIN ${users_table} u ON u.id = t.user_id ` + ` WHERE ${full_name_query} AND ${date_query} AND ` + optional_query + " order by task_date ;";
+      const params = [full_name ?? null, ...(split_date ?? null)].filter(Boolean);
+      
+      return connection.execute(query, params);
+    }
     const query =
       `SELECT t.*,u.full_name,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
       sec_to_time(sum(time_to_Sec(worked_hours)) over())  as total FROM ${tasks_table} t ` +
-        ` INNER JOIN ${users_table} u ON u.id = t.user_id ` + ` WHERE ${full_name_query} AND ${date_query} AND ` + optional_query + " order by task_date ";
-    const params = [full_name ?? null, ...(split_date ?? null)].filter(Boolean);
+        ` INNER JOIN ${users_table} u ON u.id = t.user_id ` + ` WHERE ${full_name_query} AND ${date_query} AND ` + optional_query + " AND user_id = ?  order by task_date ";
+    const params = [full_name ?? null, ...(split_date ?? null),user_id].filter(Boolean);
     
     return connection.execute(query, params);
   } catch (error) {
