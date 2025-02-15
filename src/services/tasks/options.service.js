@@ -5,13 +5,9 @@ import { config } from "../../utils/config.js";
 
 async function getOptionsService(table) {
   const table_db = config[table];
-  const query = `SELECT options FROM ${table_db};`;
+  const query = `SELECT id,options FROM ${table_db};`;
 
-  const [options] = await connection.execute(query);
-
-  const options_values = options.map((option) => option.options);
-
-  return options_values;
+  return connection.execute(query);
 }
 
 async function addOptionsService(table, option, { role }) {

@@ -179,7 +179,13 @@ async function updateTaskService(task_id, task_data, user_data) {
 
     if (role === "admin") {
       const query = `UPDATE ${tasks_table} SET ${update_string} WHERE id = ?;`;
-      return connection.query(query, [task_id]);
+      const [result] =await connection.query(query, [task_id]);
+      if (result.affectedRows <= 0) {
+        const error = new Error("La tarea no existe");
+        error.status = 403;
+        throw error;
+      }
+      return result;
     }
 
     const query = `UPDATE ${tasks_table} SET ${update_string} WHERE id = ? AND user_id = ?;`;
@@ -202,12 +208,18 @@ async function deleteTaskService(task_id, user_data) {
 
     if (role === "admin") {
       const query = `DELETE FROM ${tasks_table} WHERE id = ?;`;
-      return connection.query(query, [task_id]);
+      const [result] =await connection.query(query, [task_id]);
+      if (result.affectedRows <= 0) {
+        const error = new Error("La tarea no existe");
+        error.status = 403;
+        throw error;
+      }
+      return result;
     }
-
+    
     const query = `DELETE FROM ${tasks_table} WHERE id = ? AND user_id = ?;`;
     const [result] = await connection.query(query, [task_id, user_id]);
-
+    console.log(result,"sfsf");
     if (result.affectedRows <= 0) {
       const error = new Error("La tarea no existe o no tienes acceso a ella");
       error.status = 403;

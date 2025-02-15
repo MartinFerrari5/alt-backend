@@ -12,7 +12,7 @@ const {} = config;
 async function getOptionsController(req, res) {
   try {
     const { table } = req.query;
-    const options = await getOptionsService(table);
+    const [options] = await getOptionsService(table);
     res.status(200).json(options);
   } catch (error) {
     res.status(error.status || 500).json(error.message);
