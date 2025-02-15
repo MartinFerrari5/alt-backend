@@ -84,7 +84,7 @@ async function updateTaskController(req, res, next) {
 async function deleteTaskController(req, res) {
   try {
     const { task_id } = req.query;
-
+    
     await deleteTaskService(task_id, req.user);
     res.status(200).json({ message: "Tarea Eliminada" });
   } catch (error) {

@@ -38,7 +38,12 @@ async function checkDuplicatedUserService(table, email, requested = false) {
 
 async function deleteEmailService(email_id) {
   const query = `DELETE FROM ${emails_table} WHERE id = ?;`;
-  return connection.execute(query, [email_id]);
+  const [result] = await connection.execute(query, [email_id]);
+  if (result.affectedRows <= 0) {
+    const error = new Error("El mail no existe");
+    error.status = 403;
+    throw error;
+  }
 }
 
 async function getAllEmailsService() {

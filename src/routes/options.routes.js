@@ -17,10 +17,7 @@ router.get(
   authorize(["admin", "user"]),
   getOptionsController,
 );
-router.get("/reportes", async (req, res) => {
-  console.log("hello");
-  res.send("Hello, World!");
-});
+
 router.post("/", authenticateToken, authorize(["admin"]), addOptionsController);
 
 router.put(

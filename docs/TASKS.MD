@@ -85,7 +85,7 @@ _Enviar los parametros como query_
 
 ## 5. Añadir opciones
 
-**POST** `http://localhost:3000/options/`
+**POST** `http://localhost:3000/reportes/options/`
 
 **Body:**
 
