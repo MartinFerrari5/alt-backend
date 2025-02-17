@@ -20,7 +20,7 @@ router.get(
 router.post("/", authenticateToken, authorize(["admin"]), addEmailController);
 
 router.delete(
-  "/:email_id",
+  "/",
   authenticateToken,
   authorize(["admin"]),
   deleteEmailController,

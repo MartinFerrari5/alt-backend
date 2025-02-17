@@ -1,11 +1,10 @@
 //src/routes/login.routes.js
 
 import { Router } from "express";
-import { logInUser } from "../controllers/login.controller.js";
-import { verifyEmailMiddleware } from "../middleware/email.middleware.js";
+import { logInUserController } from "../controllers/login.controller.js";
 
 const router = Router();
 
-router.post("/", logInUser);
+router.post("/", logInUserController);
 
 export default router;

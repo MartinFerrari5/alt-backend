@@ -3,17 +3,15 @@
 import { connection } from "../database/connection.js";
 import { verifyPassword } from "./users/password.service.js";
 import { generateToken } from "../middleware/token.middleware.js";
-import dotenv from "dotenv";
+import { config } from "../utils/config.js";
 
-dotenv.config();
-
-const table_users = process.env.TABLE_USERS;
+const { users_table } = config;
 
 async function logInUserService(email, password) {
   try {
     // Query
 
-    const sql = `SELECT * FROM ${table_users} WHERE email = ?`;
+    const sql = `SELECT * FROM ${users_table} WHERE email = ?`;
     const [user] = await connection.execute(sql, [email]);
 
     if (user.length == 0 || user[0].email !== email) {

@@ -25,7 +25,7 @@ async function addEmailController(req, res, next) {
 
 async function deleteEmailController(req, res, next) {
   try {
-    const { email_id } = req.params;
+    const { email_id } = req.query;
     await deleteEmailService(email_id);
 
     res.status(200).json({ message: "Email Eliminado" });

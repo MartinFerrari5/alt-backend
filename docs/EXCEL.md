@@ -2,9 +2,9 @@
 
 1. Descargar tareas por parte de admin
 
-**POST** `http://localhost:3000/status/download`
+**POST** `http://localhost:3000/reportes/status/download`
 
-### Body 
+### Body
 
 ```json
 {

@@ -24,7 +24,7 @@ router.get(
 
 // Obtener tareas por id
 router.get(
-  "/task/:task_id",
+  "/task",
   authenticateToken,
   authorize(["admin", "user"]),
   getTaskByIdController,
@@ -32,7 +32,7 @@ router.get(
 
 // Obtener tareas por id del usuario
 router.get(
-  "/user/:user_id",
+  "/user",
   authenticateToken,
   authorize(["admin"]),
   getTaskByUserIdController,
@@ -50,13 +50,13 @@ router.post(
 router.get(
   "/filtertasks",
   authenticateToken,
-  authorize(["admin"]),
+  authorize(["admin", "user"]),
   getFilteredTasksController,
 );
 
 // Actualizar una tarea
 router.put(
-  "/:task_id",
+  "/",
   authenticateToken,
   authorize(["admin", "user"]),
   updateTaskController,
@@ -64,7 +64,7 @@ router.put(
 
 // Eliminar una tarea
 router.delete(
-  "/:task_id",
+  "/",
   authenticateToken,
   authorize(["admin", "user"]),
   deleteTaskController,

@@ -11,8 +11,8 @@ import { config } from "../utils/config.js";
 const {} = config;
 async function getOptionsController(req, res) {
   try {
-    const { table } = req.params;
-    const options = await getOptionsService(table);
+    const { table } = req.query;
+    const [options] = await getOptionsService(table);
     res.status(200).json(options);
   } catch (error) {
     res.status(error.status || 500).json(error.message);
@@ -33,7 +33,7 @@ async function addOptionsController(req, res) {
 
 async function updateOptionsController(req, res) {
   try {
-    const { options_id } = req.params;
+    const { options_id } = req.query;
     const { table, option } = req.body;
 
     await updateOptionsService(options_id, table, option);
@@ -45,7 +45,7 @@ async function updateOptionsController(req, res) {
 }
 async function deleteOptionsController(req, res) {
   try {
-    const { options_id } = req.params;
+    const { options_id } = req.query;
     const { table } = req.body;
     await deleteOptionsService(options_id, table);
 

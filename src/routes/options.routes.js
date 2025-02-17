@@ -12,26 +12,23 @@ import {
 const router = Router();
 
 router.get(
-  "/:table",
+  "/",
   authenticateToken,
   authorize(["admin", "user"]),
   getOptionsController,
 );
-router.get("/reportes", async (req, res) => {
-  console.log("hello");
-  res.send("Hello, World!");
-});
+
 router.post("/", authenticateToken, authorize(["admin"]), addOptionsController);
 
 router.put(
-  "/:options_id",
+  "/",
   authenticateToken,
   authorize(["admin"]),
   updateOptionsController,
 );
 
 router.delete(
-  "/:options_id",
+  "/",
   authenticateToken,
   authorize(["admin"]),
   deleteOptionsController,

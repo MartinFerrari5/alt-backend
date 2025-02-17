@@ -10,7 +10,7 @@ import { logInUserService } from "../services/login.service.js";
  * @param {string} password
  */
 
-async function logInUser(req, res) {
+async function logInUserController(req, res) {
   try {
     const { email, password } = req.body;
 
@@ -28,4 +28,4 @@ async function logInUser(req, res) {
   }
 }
 
-export { logInUser };
+export { logInUserController };
