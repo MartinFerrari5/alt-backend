@@ -38,9 +38,9 @@ const addUserController = async (req, res, next) => {
       return res.status(400).json(error.message);
     }
 
-    await addUserToDB(full_name, email, password, role);
+    const [id] = await addUserToDB(full_name, email, password, role);
 
-    return res.status(200).json({ message: "User created" });
+    return res.status(200).json({ message: "User created",user:{id:id[0].id,full_name,email,role} });
   } catch (error) {
     return res.status(500).json(error.message);
   }

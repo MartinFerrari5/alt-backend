@@ -9,7 +9,10 @@ async function addEmailService(email) {
   try {
     await checkDuplicatedUserService(emails_table, email);
     const query = `INSERT INTO ${emails_table} (id, email) VALUES (UUID(),?);`;
-    return connection.query(query, [email]);
+    await connection.query(query, [email]);
+
+    return connection.execute(`SELECT id FROM ${emails_table} ORDER BY created_at DESC LIMIT 1;`);
+
   } catch (error) {
     throw error;
   }

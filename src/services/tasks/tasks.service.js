@@ -146,7 +146,7 @@ async function addTaskService(
     }
 
     const query = `INSERT INTO ${tasks_table} (id,company,project,task_type,task_description,entry_time,exit_time,hour_type,lunch_hours,status,user_id,task_date,worked_hours) VALUES (UUID(),?,?,?,?,?,?,?,?,?,?,?,timediff(?, ?));`;
-    return connection.query(query, [
+    await connection.query(query, [
       company,
       project,
       task_type,
@@ -161,6 +161,9 @@ async function addTaskService(
       exit_time,
       entry_time,
     ]);
+
+    return connection.execute(`SELECT id FROM ${tasks_table} where user_id = ? ORDER BY created_at DESC LIMIT 1;`, [user_id]);
+
   } catch (error) {
     throw error;
   }
