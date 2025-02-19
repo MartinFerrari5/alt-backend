@@ -61,9 +61,9 @@ async function addTaskController(req, res) {
     if (error) {
       return res.status(400).json(error.message);
     }
-
-    await addTaskService(req.body, req.user.id);
-    res.status(200).json({ message: "Tarea Creada" });
+   
+     const [id] = await addTaskService(req.body, req.user.id);
+    res.status(200).json({ message: "Tarea Creada",task: {id:id[0].id, ...req.body} });
   } catch (error) {
     res.status(error.status || 500).json(error.message);
   }

@@ -31,7 +31,7 @@ const addUserToDB = async (full_name, email, password, role = "user") => {
       throw error;
     }
     const hashedPassword = await hashPassword(password);
-    const query = `INSERT INTO alt_users (id,full_name, email, password, role) VALUES (UUID(),?, ?, ?, ?);`;
+    const query = `INSERT INTO ${users_table} (id,full_name, email, password, role) VALUES (UUID(),?, ?, ?, ?);`;
 
     const [result] = await connection.query(query, [
       full_name,
@@ -39,6 +39,9 @@ const addUserToDB = async (full_name, email, password, role = "user") => {
       hashedPassword,
       role,
     ]);
+
+    return connection.execute(`SELECT id FROM ${users_table} ORDER BY created_at DESC LIMIT 1;`);
+
   } catch (error) {
     throw error;
   }

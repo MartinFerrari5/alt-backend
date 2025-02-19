@@ -23,9 +23,10 @@ async function addOptionsController(req, res) {
   try {
     const { table, option } = req.body;
 
-    await addOptionsService(table, option, req.user);
+    const [values] = await addOptionsService(table, option, req.user);
+    console.log(values)
 
-    res.status(200).json({ message: "Opcion Agregada" });
+    res.status(200).json({ message: "Opcion Agregada",option: {id:values[0].id, option} });
   } catch (error) {
     res.status(error.status || 500).json(error.message);
   }

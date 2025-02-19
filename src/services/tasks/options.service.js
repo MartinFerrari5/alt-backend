@@ -24,9 +24,10 @@ async function addOptionsService(table, option, { role }) {
     }
     const table_db = config[table];
 
-    const query = `INSERT INTO ${table_db} VALUES (UUID(),?);`;
+    const query = `INSERT INTO ${table_db} VALUES (UUID(),?,now());`;
+    await connection.execute(query, [option]);
 
-    return connection.execute(query, [option]);
+    return connection.execute(`SELECT id FROM ${table_db} ORDER BY created_at DESC LIMIT 1;`);
   } catch (error) {
     throw error;
   }
