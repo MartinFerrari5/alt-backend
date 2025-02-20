@@ -15,18 +15,18 @@ async function getAllTasksService(user_data, optional_query = true) {
       `INNER JOIN ${users_table} u ON u.id = t.user_id ` +
       ` where  ` +
       optional_query +
-      " order by task_date ";
+      " order by created_at ";
 
     return connection.query(query);
   }
 
   const query =
     `SELECT t.*,u.full_name,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
-      sec_to_time(sum(time_to_Sec(worked_hours)) over(order by task_date)) as total FROM ${tasks_table} t  ` +
+      sec_to_time(sum(time_to_Sec(worked_hours)) over()) as total FROM ${tasks_table} t  ` +
     `INNER JOIN ${users_table} u ON u.id = t.user_id ` +
     ` where user_id = ? and ` +
     optional_query +
-    " order by task_date ";
+    " order by created_at ";
 
   return connection.execute(query, [user_id]);
 }
@@ -66,18 +66,29 @@ async function getTaskByUserIdService(user_id, user_data) {
 }
 
 async function getFilteredTasksService(
+  company,
+  project,
   full_name,
   date,
+  status,
   user_data,
   optional_query = true,
 ) {
   try {
     const { id: user_id, role } = user_data;
 
+    // Filtro empresa
+    const company_query = company ? `company = ?` : true;
+
+    // Filtro proyecto
+    const project_query = project ? `project = ?` : true;
+
+    // Filtro nombre
     const full_name_query = full_name
       ? `user_id = (SELECT DISTINCT id FROM ${users_table} WHERE INSTR(full_name, ? ))`
       : true;
 
+    // Filtro fecha
     const split_date = date?.split(" ") ?? "";
 
     const date_query_structure =
@@ -87,17 +98,25 @@ async function getFilteredTasksService(
 
     const date_query = date ? date_query_structure : true;
 
+    // Filtro status
+    const status_query = status ? `status = ?` : true;
+
     if (role === "admin") {
       const query =
         `SELECT t.*,u.full_name,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
       sec_to_time(sum(time_to_Sec(worked_hours)) over())  as total FROM ${tasks_table} t ` +
         ` INNER JOIN ${users_table} u ON u.id = t.user_id ` +
-        ` WHERE ${full_name_query} AND ${date_query} AND ` +
+        ` WHERE  ${company_query} AND ${project_query} AND ${full_name_query} AND ${date_query} AND ${status_query} AND ` +
         optional_query +
-        " order by task_date ;";
-      const params = [full_name ?? null, ...(split_date ?? null)].filter(
-        Boolean,
-      );
+        " order by created_at ;";
+
+      const params = [
+        company ?? null,
+        project ?? null,
+        full_name ?? null,
+        ...(split_date ?? null),
+        status ?? null,
+      ].filter(Boolean);
 
       return connection.execute(query, params);
     }
@@ -105,12 +124,17 @@ async function getFilteredTasksService(
       `SELECT t.*,u.full_name,sec_to_time(sum(time_to_Sec(worked_hours)) over(ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) as incremental_total,
       sec_to_time(sum(time_to_Sec(worked_hours)) over())  as total FROM ${tasks_table} t ` +
       ` INNER JOIN ${users_table} u ON u.id = t.user_id ` +
-      ` WHERE ${full_name_query} AND ${date_query} AND ` +
+      ` WHERE  ${company_query} AND ${project_query} AND ${full_name_query} AND ${date_query} AND ${status_query} AND ` +
       optional_query +
-      " AND user_id = ?  order by task_date ";
-    const params = [full_name ?? null, ...(split_date ?? null), user_id].filter(
-      Boolean,
-    );
+      " AND user_id = ?  order by created_at ;";
+    const params = [
+      company ?? null,
+      project ?? null,
+      full_name ?? null,
+      ...(split_date ?? null),
+      status ?? null,
+      user_id,
+    ].filter(Boolean);
 
     return connection.execute(query, params);
   } catch (error) {
@@ -162,8 +186,10 @@ async function addTaskService(
       entry_time,
     ]);
 
-    return connection.execute(`SELECT id FROM ${tasks_table} where user_id = ? ORDER BY created_at DESC LIMIT 1;`, [user_id]);
-
+    return connection.execute(
+      `SELECT id FROM ${tasks_table} where user_id = ? ORDER BY created_at DESC LIMIT 1;`,
+      [user_id],
+    );
   } catch (error) {
     throw error;
   }
@@ -182,7 +208,7 @@ async function updateTaskService(task_id, task_data, user_data) {
 
     if (role === "admin") {
       const query = `UPDATE ${tasks_table} SET ${update_string} WHERE id = ?;`;
-      const [result] =await connection.query(query, [task_id]);
+      const [result] = await connection.query(query, [task_id]);
       if (result.affectedRows <= 0) {
         const error = new Error("La tarea no existe");
         error.status = 403;
@@ -211,7 +237,7 @@ async function deleteTaskService(task_id, user_data) {
 
     if (role === "admin") {
       const query = `DELETE FROM ${tasks_table} WHERE id = ?;`;
-      const [result] =await connection.query(query, [task_id]);
+      const [result] = await connection.query(query, [task_id]);
       if (result.affectedRows <= 0) {
         const error = new Error("La tarea no existe");
         error.status = 403;
@@ -219,10 +245,10 @@ async function deleteTaskService(task_id, user_data) {
       }
       return result;
     }
-    
+
     const query = `DELETE FROM ${tasks_table} WHERE id = ? AND user_id = ?;`;
     const [result] = await connection.query(query, [task_id, user_id]);
-    console.log(result,"sfsf");
+    console.log(result, "sfsf");
     if (result.affectedRows <= 0) {
       const error = new Error("La tarea no existe o no tienes acceso a ella");
       error.status = 403;

@@ -17,8 +17,10 @@ async function addEmailController(req, res, next) {
     }
 
     const [id] = await addEmailService(email);
-    
-    res.status(200).json({ message: "Email creado",email:{id:id[0].id,email} });
+
+    res
+      .status(200)
+      .json({ message: "Email creado", email: { id: id[0].id, email } });
   } catch (error) {
     res.status(error.status || 500).json(error.message);
   }

@@ -22,7 +22,7 @@ const getUserByIdFromDB = (user_id) => {
   return connection.query(query, [user_id]);
 };
 
-const addUserToDB = async (full_name, email, password, role = "user") => {
+async function addUserToDB(full_name, email, password, role = "user") {
   try {
     await checkDuplicatedUserService(users_table, email);
     if (!employees.includes(role)) {
@@ -40,12 +40,13 @@ const addUserToDB = async (full_name, email, password, role = "user") => {
       role,
     ]);
 
-    return connection.execute(`SELECT id FROM ${users_table} ORDER BY created_at DESC LIMIT 1;`);
-
+    return connection.execute(
+      `SELECT id FROM ${users_table} ORDER BY created_at DESC LIMIT 1;`,
+    );
   } catch (error) {
     throw error;
   }
-};
+}
 
 async function updateUserService(user_id, updated_data) {
   const keys = Object.keys(updated_data);

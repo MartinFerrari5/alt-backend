@@ -31,13 +31,15 @@ async function getExportedTasksByIdController(req, res, next) {
 
 async function getFilteredExportedTasksController(req, res) {
   try {
-    const { fullname: full_name, date } = req.query;
+    const { company, project, fullname: full_name, date, status } = req.query;
 
     const [tasks] = await getFilteredTasksService(
+      company,
+      project,
       full_name,
       date,
+      status,
       req.user,
-      "status=1",
     );
 
     res.status(200).json({ tasks });
@@ -53,14 +55,25 @@ async function downloadExportedTasksController(req, res, next) {
     // const optional_query = "status=1";
     // req.user = { id: "e9755413-e0d3-11ef-ad66-047c1614f0fd", role: "admin" };
     // const [tasks] = await getAllTasksService(req.user, optional_query);
-    
+
     const formatted_tasks = tasks.map((task) => {
-      const {company: Compania, project: Proyecto, task_type: Tipo_Tarea,
-        task_description: Descripcion, entry_time: Hora_Entrada, exit_time: Hora_Salida,
-        hour_type: Tipo_Hora, lunch_hours: Horas_Descanso, status: Estado, user_id: ID_Usuario,
-        task_date: Fecha
+      const {
+        company: Compania,
+        project: Proyecto,
+        task_type: Tipo_Tarea,
+        task_description: Descripcion,
+        entry_time: Hora_Entrada,
+        exit_time: Hora_Salida,
+        hour_type: Tipo_Hora,
+        lunch_hours: Horas_Descanso,
+        task_date: Fecha,
+        worked_hours: Horas_Trabajadas,
+        incremental_total: Incremental,
+        full_name: Nombre_Apellido,
       } = task;
       return {
+        Fecha,
+        Nombre_Apellido,
         Compania,
         Proyecto,
         Tipo_Tarea,
@@ -69,12 +82,11 @@ async function downloadExportedTasksController(req, res, next) {
         Hora_Salida,
         Tipo_Hora,
         Horas_Descanso,
-        Estado,
-        ID_Usuario,
-        Fecha
-      }
+        Horas_Trabajadas,
+        Incremental,
+      };
     });
-    
+
     exportToExcel(res, formatted_tasks);
     // res.status(200).json({ tasks });
   } catch (error) {
