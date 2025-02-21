@@ -207,8 +207,10 @@ async function updateTaskService(task_id, task_data, user_data) {
     const update_string = update_values.join(", ");
 
     if (role === "admin") {
-      const query = `UPDATE ${tasks_table} SET ${update_string} WHERE id = ?;`;
+      const query = `UPDATE ${tasks_table} SET ${update_string} WHERE id IN ( ? );`;
+    
       const [result] = await connection.query(query, [task_id]);
+      
       if (result.affectedRows <= 0) {
         const error = new Error("La tarea no existe");
         error.status = 403;

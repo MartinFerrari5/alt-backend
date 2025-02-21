@@ -14,7 +14,7 @@ async function authenticateToken(req, res, next) {
   try {
     const decodedAccessToken = jwt.verify(accessToken, token_pass);
 
-    req.user = { id: decodedAccessToken.userId, role: decodedAccessToken.role };
+    req.user = { id: decodedAccessToken.userId, full_name: decodedAccessToken.full_name,role: decodedAccessToken.role };
 
     next(); /** Ejecuta el controller que le sigue el middleware **/
   } catch (error) {

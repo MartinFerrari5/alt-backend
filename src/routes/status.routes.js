@@ -7,6 +7,7 @@ import {
   getExportedTasksController,
   getFilteredExportedTasksController,
   updateStatusController,
+  sendToRRHHTasksController
 } from "../controllers/status.controller.js";
 import { authenticateToken, authorize } from "../middleware/auth.middleware.js";
 const router = Router();
@@ -35,6 +36,14 @@ router.post(
   downloadExportedTasksController,
 );
 
+router.post(
+  "/rrhh",
+  authenticateToken,
+  authorize(["admin", "user"]),
+  sendToRRHHTasksController,
+);
+
+
 // Obtener tareas filtradas: por fecha de creacion y/o nombre y apellido del usuario
 router.get(
   "/filtertasks",
@@ -49,5 +58,7 @@ router.put(
   authorize(["admin", "user"]),
   updateStatusController,
 );
+
+
 
 export default router;

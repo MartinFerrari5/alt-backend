@@ -5,9 +5,9 @@ import { addRefreshTokenToDB } from "../services/token.service.js";
 import { config } from "../utils/config.js";
 
 const { token_pass } = config;
-async function generateToken(user_id, role) {
+async function generateToken(user_id, full_name,role) {
   try {
-    const token = jwt.sign({ userId: user_id, role }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user_id, full_name,role }, process.env.JWT_SECRET, {
       subject: "accessUser",
       // expiresIn: "1h",
     });

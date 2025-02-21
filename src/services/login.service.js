@@ -22,7 +22,7 @@ async function logInUserService(email, password) {
     await verifyPassword(password, user[0].password);
 
     // Generar token
-    return generateToken(user[0].id, user[0].role);
+    return generateToken(user[0].id, user[0].full_name,user[0].role);
   } catch (error) {
     throw error;
   }

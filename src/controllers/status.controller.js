@@ -1,11 +1,13 @@
 // src/controllers/status.controller.js
 
 import {
+  deleteTaskService,
   getAllTasksService,
   getFilteredTasksService,
   getTaskByIdService,
-  updateTaskService,
+  updateTaskService
 } from "../services/tasks/tasks.service.js";
+import { sendEmailToRRHH } from "../utils/email_rrhh.js";
 import { exportToExcel } from "../utils/export_excel.js";
 
 async function getExportedTasksController(req, res, next) {
@@ -70,6 +72,7 @@ async function downloadExportedTasksController(req, res, next) {
         worked_hours: Horas_Trabajadas,
         incremental_total: Incremental,
         full_name: Nombre_Apellido,
+        total: Horas_Total
       } = task;
       return {
         Fecha,
@@ -84,9 +87,10 @@ async function downloadExportedTasksController(req, res, next) {
         Horas_Descanso,
         Horas_Trabajadas,
         Incremental,
+        Horas_Total
       };
     });
-
+    
     exportToExcel(res, formatted_tasks);
     // res.status(200).json({ tasks });
   } catch (error) {
@@ -100,7 +104,27 @@ async function updateStatusController(req, res, next) {
 
     await updateTaskService(task_id, req.body, req.user);
 
-    res.status(200).json({ message: "Tarea exportada" });
+    res.status(200).json({ message: "Tarea finalizada" });
+  } catch (error) {
+    res.status(error.status || 500).json(error.message);
+  }
+}
+
+async function sendToRRHHTasksController(req,res){
+  try {
+    const { company,project,date} = req.query;
+    const {full_name} = req.user;
+    const tasks = req.body.tasks
+    
+    const tasks_ids = tasks.map(task => task.id)
+
+    const status = {status:1}
+   
+
+    await updateTaskService( tasks_ids,status, req.user);
+    await sendEmailToRRHH(company ,project  ,date ,full_name)
+
+    res.status(200).json({ message: "Tarea enviada a Recursos Humanos" });
   } catch (error) {
     res.status(error.status || 500).json(error.message);
   }
@@ -112,4 +136,5 @@ export {
   downloadExportedTasksController,
   getFilteredExportedTasksController,
   updateStatusController,
+  sendToRRHHTasksController
 };
